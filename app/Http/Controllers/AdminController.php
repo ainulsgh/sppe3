@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use App\Models\PerikananRecord;
 use App\Models\PeternakanRecord;
 use App\Models\PerhubunganRecord;
-use App\Models\dpmptspRecord;
+use App\Models\DpmptspRecord;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Export\Export;
 
@@ -69,7 +69,7 @@ class AdminController extends Controller
             ],
             'dpmptsp' => [
                 'label' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
-                'model' => dpmptspRecord::class,
+                'model' => DpmptspRecord::class,
                 'indicators' => [
                     'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'Unit'],
                 ],
@@ -351,7 +351,7 @@ class AdminController extends Controller
             ],
             'dpmptsp' => [
                 'label' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
-                'model' => dpmptspRecord::class,
+                'model' => DpmptspRecord::class,
                 'indicators' => [
                     'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'Unit'],
                 ],
@@ -507,7 +507,7 @@ class AdminController extends Controller
             ],
             'dpmptsp' => [
                 'label' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
-                'model' => dpmptspRecord::class,
+                'model' => DpmptspRecord::class,
                 'indicators' => [
                     'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'Unit'],
                 ],
