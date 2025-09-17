@@ -220,7 +220,7 @@ class DpmptspRecordController extends Controller
 
         // Mapping indikator + label + satuan
         $indikator = [
-            'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'unit'],
+            ['key' => 'pbg',       'label' => 'Persetujuan Bangunan Gedung',        'unit' => 'Unit'],
         ];
 
         // Header & rows (long format)
