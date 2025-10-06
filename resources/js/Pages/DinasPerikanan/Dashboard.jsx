@@ -10,8 +10,16 @@ import { LineChart as LineChartIcon, Table as TableIcon } from 'lucide-react';
 
 export default function Dashboard({
 
+<<<<<<< HEAD
   chartYear, chartIndicator, chartIndicatorLbl, chart,
   tableYears = [], tableIndicators = [], tableMonths = [], tableRows = [],
+=======
+  // grafik (datang dari server — bisa berisi default)
+  chartYear, chartIndicator, chartIndicatorLbl, chart,
+  // tabel (selected; boleh kosong)
+  tableYears = [], tableIndicators = [], tableMonths = [], tableRows = [],
+  // master
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   indicators = [], allYears = [], allMonths = [],
 }) {
   const monthsFull = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -27,17 +35,33 @@ export default function Dashboard({
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
+<<<<<<< HEAD
+=======
+  /* ====== Inisialisasi: pakai nilai server HANYA jika ada di query URL ====== */
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const hasYearQ     = !!searchParams?.has('chart_year');
   const hasIndQ      = !!searchParams?.has('chart_indicator');
 
+<<<<<<< HEAD
   const [gTahun, setGTahun]         = useState(hasYearQ ? (chartYear ?? null) : null);
   const [gIndikator, setGIndikator] = useState(hasIndQ  ? (chartIndicator ?? null) : null);
 
+=======
+  /* ===== Grafik (single) — default TIDAK terpilih ===== */
+  const [gTahun, setGTahun]         = useState(hasYearQ ? (chartYear ?? null) : null);
+  const [gIndikator, setGIndikator] = useState(hasIndQ  ? (chartIndicator ?? null) : null);
+
+  /* ===== Tabel (multi) – selected boleh [] ===== */
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const [tYears, setTYears]           = useState(tableYears);
   const [tIndikators, setTIndikators] = useState(tableIndicators.map(i=>i.key));
   const [tMonths, setTMonths]         = useState(tableMonths);
 
+<<<<<<< HEAD
+=======
+  // applyAll: kirim hanya param yang ada
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const applyAll = (y = gTahun, ik = gIndikator, years = tYears, inds = tIndikators, mons = tMonths) => {
     const params = {};
     if (y !== null && y !== undefined) params.chart_year = Number(y);
@@ -49,6 +73,10 @@ export default function Dashboard({
     router.get(route('perikanan.dashboard'), params, { preserveScroll: true, preserveState: true });
   };
 
+<<<<<<< HEAD
+=======
+  // Options
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const optYears      = useMemo(() => (allYears ?? []).map(y=>({ value:y, label:y })), [allYears]);
   const optIndikators = useMemo(() => (indicators ?? []).map(i=>({ value:i.key, label:i.label })), [indicators]);
   const optMonths     = useMemo(
@@ -57,35 +85,59 @@ export default function Dashboard({
     [allMonths]
   );
 
+<<<<<<< HEAD
+=======
+  // Kolom bulan untuk tabel
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthCols = useMemo(() => {
     const use = (tMonths.length ? tMonths : (allMonths.length ? allMonths : Array.from({length:12},(_,i)=>i+1)))
       .slice().sort((a,b)=>a-b);
     return use.map(m => ({ num:m, key:monthKeys[m-1], label:monthsFull[m-1] }));
   }, [tMonths, allMonths]);
 
+<<<<<<< HEAD
+=======
+  // helper angka "1,23" / "1.23"
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const toNumber = (v) => {
     if (v === null || v === undefined || v === '') return 0;
     const num = Number(String(v).replace(',', '.'));
     return Number.isNaN(num) ? 0 : num;
   };
 
+<<<<<<< HEAD
+=======
+  // data grafik numerik
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const chartDataRaw = useMemo(
     () => (chart ?? []).map(d => ({ ...d, nilaiNum: toNumber(d.nilai) })),
     [chart]
   );
 
+<<<<<<< HEAD
+=======
+  // fallback 12 bulan bernilai 0 jika kosong / belum pilih filter
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const baseMonths = useMemo(
     () => Array.from({length:12},(_,i)=>({ bulan:i+1, nilaiNum:0 })),
     []
   );
   const chartData = chartDataRaw.length ? chartDataRaw : baseMonths;
 
+<<<<<<< HEAD
+=======
+  // domain Y
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const maxVal   = useMemo(() => Math.max(0, ...chartData.map(d=>d.nilaiNum)), [chartData]);
   const yPad     = Math.max(5, Math.ceil(maxVal * 0.1));
   const yDomain  = [0, maxVal + yPad];
 
   const phAll = (label) => ({ label: `Semua ${label}`, value: '__ALL__', isDisabled: true });
 
+<<<<<<< HEAD
+=======
+  // unit default "Ton"
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const indikatorWithUnit = useMemo(
     () => (indicators ?? []).map(i => ({ ...i, unit: i.unit ?? 'Ton' })),
     [indicators]
@@ -104,10 +156,17 @@ export default function Dashboard({
   };
 
   return (
+<<<<<<< HEAD
     // ganti nama dinasnya
     <AuthenticatedLayout header={<span >Dinas Kelautan dan Perikanan</span>}> 
       <Head title="Dinas Kelautan dan Perikanan" />
 
+=======
+    <AuthenticatedLayout header={<span >Dinas Kelautan dan Perikanan</span>}>
+      <Head title="Dinas Kelautan dan Perikanan" />
+
+      {/* ===== Card: Grafik + Filter grafik ===== */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-slate-700 flex items-center gap-2">
@@ -117,6 +176,10 @@ export default function Dashboard({
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mb-4">
+<<<<<<< HEAD
+=======
+          {/* Tahun (grafik) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <Select
@@ -130,7 +193,11 @@ export default function Dashboard({
               placeholder="Pilih tahun"
             />
           </div>
+<<<<<<< HEAD
 
+=======
+          {/* Indikator (grafik) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Indikator</label>
             <Select
@@ -178,6 +245,10 @@ export default function Dashboard({
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+      {/* ===== Card: Filter tabel + Tabel ===== */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="bg-white rounded-2xl shadow-sm border p-5">
         <div className="mb-4 font-semibold text-slate-700 flex items-center gap-2">
           <TableIcon className="h-5 w-5" />
@@ -185,6 +256,10 @@ export default function Dashboard({
         </div>
 
         <div className="grid lg:grid-cols-3 gap-4 mb-5">
+<<<<<<< HEAD
+=======
+          {/* Tahun (tabel) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <Select
@@ -200,6 +275,10 @@ export default function Dashboard({
             />
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* Indikator (tabel) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Indikator</label>
             <Select
@@ -218,6 +297,10 @@ export default function Dashboard({
             />
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* Bulan (tabel) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <Select
@@ -234,6 +317,10 @@ export default function Dashboard({
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Tabel */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="overflow-x-auto">
           <table className="w-full text-sm border">
             <thead className="bg-slate-900">

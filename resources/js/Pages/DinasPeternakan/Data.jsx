@@ -13,6 +13,10 @@ export default function Data({ records = [], filters = {} }) {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
     
+<<<<<<< HEAD
+=======
+  // -------------------- Helpers label bulan --------------------
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthLabels = useMemo(
     () => [
       'Januari','Februari','Maret','April','Mei','Juni',
@@ -21,6 +25,10 @@ export default function Data({ records = [], filters = {} }) {
     []
   );
 
+<<<<<<< HEAD
+=======
+  // -------------------- Normalisasi data --------------------
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const normalized = useMemo(
     () =>
       (records ?? []).map((r) => ({
@@ -31,6 +39,10 @@ export default function Data({ records = [], filters = {} }) {
     [records]
   );
 
+<<<<<<< HEAD
+=======
+  // Tahun yang tersedia di DB (unik & terurut)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const yearsInData = useMemo(
     () =>
       Array.from(new Set(normalized.map((r) => r.tahun)))
@@ -39,6 +51,10 @@ export default function Data({ records = [], filters = {} }) {
     [normalized]
   );
 
+<<<<<<< HEAD
+=======
+  // Bulan yang tersedia untuk tahun terpilih; jika belum pilih tahun, ambil semua bulan yang ada di DB
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthsForSelectedYear = useMemo(() => {
     const source = tahun === '' ? normalized : normalized.filter((r) => r.tahun === Number(tahun));
     return Array.from(new Set(source.map((r) => r.bulan)))
@@ -46,6 +62,10 @@ export default function Data({ records = [], filters = {} }) {
       .sort((a, b) => a - b);
   }, [normalized, tahun]);
 
+<<<<<<< HEAD
+=======
+  // -------------------- Default dari server (hanya jika valid di DB) --------------------
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (filters?.tahun && yearsInData.includes(Number(filters.tahun))) {
       setTahun(Number(filters.tahun));
@@ -53,14 +73,25 @@ export default function Data({ records = [], filters = {} }) {
     if (filters?.bulan && monthsForSelectedYear.includes(Number(filters.bulan))) {
       setBulan(Number(filters.bulan));
     }
+<<<<<<< HEAD
   }, [filters, yearsInData.length]);
 
+=======
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, yearsInData.length]);
+
+  // Reset bulan jika tidak tersedia di tahun yang dipilih
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (bulan !== '' && !monthsForSelectedYear.includes(Number(bulan))) {
       setBulan('');
     }
   }, [monthsForSelectedYear, bulan]);
 
+<<<<<<< HEAD
+=======
+  // Tutup dropdown export saat klik luar
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     function handleClickOutside(e) {
       if (exportRef.current && !exportRef.current.contains(e.target)) setShowExport(false);
@@ -69,6 +100,10 @@ export default function Data({ records = [], filters = {} }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+<<<<<<< HEAD
+=======
+  // Record terpilih (untuk menampilkan nilai total/angka)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const selectedYear = tahun === '' ? null : Number(tahun);
   const selectedMonth = bulan === '' ? null : Number(bulan);
   const record =
@@ -78,7 +113,11 @@ export default function Data({ records = [], filters = {} }) {
 
   const canAct = !!(selectedYear && selectedMonth);
 
+<<<<<<< HEAD
   //sesuaikan dengan database
+=======
+  // Daftar indikator + unit
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const indikator = [
     { label: 'Daging Sapi',                 key: 'daging_sapi', unit: 'Ton' },
     { label: 'Daging Kambing',              key: 'daging_kambing', unit: 'Ton' },
@@ -95,10 +134,17 @@ export default function Data({ records = [], filters = {} }) {
   ];
 
   return (
+<<<<<<< HEAD
     //ganti dinas
     <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
       <Head title="Dinas Peternakan dan Kesehatan Hewan" />
 
+=======
+    <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
+      <Head title="Dinas Peternakan dan Kesehatan Hewan" />
+
+      {/* FILTER */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -126,6 +172,10 @@ export default function Data({ records = [], filters = {} }) {
             </select>
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* Bulan (tergantung tahun) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -144,7 +194,13 @@ export default function Data({ records = [], filters = {} }) {
         </div>
       </div>
 
+<<<<<<< HEAD
       <div className="bg-white rounded-2xl shadow-sm border p-5">
+=======
+      {/* TABEL + ACTIONS */}
+      <div className="bg-white rounded-2xl shadow-sm border p-5">
+        {/* Header tabel + tombol di kanan */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="flex items-center justify-between mb-3">
 
           <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
@@ -200,6 +256,10 @@ export default function Data({ records = [], filters = {} }) {
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Tabel (lebih compact) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="overflow-x-auto shadow border">
 <table className="w-full text-sm md:text-sm leading-tight">
   <thead className="bg-slate-900 text-white ">

@@ -179,12 +179,20 @@ class PerhubunganRecordController extends Controller
         );
 
         return redirect()
+<<<<<<< HEAD
             ->route('perhubungan.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
+=======
+            ->route('Perhubungan.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             ->with('success', 'Data berhasil disimpan.');
     }
 
     public function store(Request $request)
     {
+<<<<<<< HEAD
+=======
+        // gunakan rules & numericFields yang sama
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $numericFields = [
             'retribusi_truk',
             'retribusi_pick_up',
@@ -208,15 +216,23 @@ class PerhubunganRecordController extends Controller
 
         $data['user_id'] = $request->user()->id;
 
+<<<<<<< HEAD
+=======
+        // PENTING: pakai updateOrCreate agar MENIMPA jika (tahun, bulan) sudah ada
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         PerhubunganRecord::updateOrCreate(
             ['tahun' => $data['tahun'], 'bulan' => $data['bulan']],
             $data
         );
 
+<<<<<<< HEAD
         // ✅ 303 agar flash terbaca konsisten oleh Inertia
         return redirect()
             ->back(303)
             ->with('success', 'Data berhasil disimpan.');
+=======
+        return back()->with('success', 'Data berhasil disimpan.');
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     }
 
     public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse

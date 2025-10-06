@@ -9,33 +9,61 @@ export default function InputData({ records = [], mode = 'create', record = null
 
   const { flash } = usePage().props;
 
+<<<<<<< HEAD
   const [periodError, setPeriodError] = useState('');
 
   const [successMsg, setSuccessMsg] = useState('');
 
   const [existsMsg, setExistsMsg] = useState('');
 
+=======
+  // Error periode (tahun/bulan belum dipilih)
+  const [periodError, setPeriodError] = useState('');
+
+  // Pesan sukses submit (auto-hide)
+  const [successMsg, setSuccessMsg] = useState('');
+
+  // Pesan “sudah ada di database” (NO timer, hanya bisa ditutup manual)
+  const [existsMsg, setExistsMsg] = useState('');
+
+  // Label bulan
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthNames = useMemo(
     () => ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],
     []
   );
 
+<<<<<<< HEAD
+=======
+  // Normalisasi records
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const normalized = useMemo(
     () => (records ?? []).map(r => ({ ...r, tahun: Number(r.tahun), bulan: Number(r.bulan) })),
     [records]
   );
 
+<<<<<<< HEAD
+=======
+  // Ambil flash success dari server -> tampilkan (auto-hide 4 detik)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (flash?.success) setSuccessMsg(String(flash.success));
   }, [flash?.success]);
 
+<<<<<<< HEAD
+=======
+  // Auto-hide untuk pesan sukses
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (!successMsg) return;
     const t = setTimeout(() => setSuccessMsg(''), 4000);
     return () => clearTimeout(t);
   }, [successMsg]);
 
+<<<<<<< HEAD
   //ganti nama variabel yang ada di database
+=======
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const base = {
     tahun: '',
     bulan: '',
@@ -50,6 +78,10 @@ export default function InputData({ records = [], mode = 'create', record = null
     budidaya_sawah: '',
   };
 
+<<<<<<< HEAD
+=======
+  // initial untuk mode edit
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const initial = useMemo(() => {
     if (mode === 'edit') {
       const t = Number(filters?.tahun) || '';
@@ -84,14 +116,24 @@ export default function InputData({ records = [], mode = 'create', record = null
 
   const { data, setData, post, processing, reset, errors } = useForm({ ...initial });
 
+<<<<<<< HEAD
   const exists = useMemo(() => {
     if (mode !== 'create') return false; 
+=======
+  // ====== CEK EXISTING (tahun, bulan) ======
+  const exists = useMemo(() => {
+    if (mode !== 'create') return false; // di edit periode terkunci
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     const t = Number(data.tahun);
     const b = Number(data.bulan);
     if (!t || !b) return false;
     return normalized.some(r => r.tahun === t && r.bulan === b);
   }, [mode, data.tahun, data.bulan, normalized]);
 
+<<<<<<< HEAD
+=======
+  // Tampilkan banner “sudah ada” (tanpa timer)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (mode !== 'create') return;
     const t = Number(data.tahun);
@@ -104,6 +146,10 @@ export default function InputData({ records = [], mode = 'create', record = null
     }
   }, [exists, data.tahun, data.bulan, monthNames, mode]);
 
+<<<<<<< HEAD
+=======
+  // ====== SUBMIT ======
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const submit = (e) => {
     e.preventDefault();
 
@@ -114,13 +160,21 @@ export default function InputData({ records = [], mode = 'create', record = null
     }
     setPeriodError('');
 
+<<<<<<< HEAD
+=======
+    // Pengaman ekstra: jika sudah ada, jangan submit (misal user tekan Enter)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     if (mode === 'create' && exists) return;
 
     const action = mode === 'edit' ? route('perikanan.upsert') : route('perikanan.store');
 
     post(action, {
       preserveScroll: false,
+<<<<<<< HEAD
       preserveState: true, 
+=======
+      preserveState: true, // jaga state lokal
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
 
       onSuccess: (page) => {
         const serverMsg = page?.props?.flash?.success;
@@ -140,9 +194,12 @@ export default function InputData({ records = [], mode = 'create', record = null
   );
   const months = monthNames;
 
+<<<<<<< HEAD
   //ganti label dan keynya
   //label yang muncul di halaman web
   //key yang ada di database
+=======
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const indikator = [
     { label: 'Penangkapan di laut', key: 'penangkapan_di_laut' },
     { label: 'Penangkapan di perairan umum', key: 'penangkapan_di_perairan_umum' },
@@ -158,13 +215,20 @@ export default function InputData({ records = [], mode = 'create', record = null
   const isEdit = mode === 'edit';
 
   return (
+<<<<<<< HEAD
     // ganti nama dinasnya
+=======
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     <AuthenticatedLayout header={<div className="flex items-center gap-3">
       <span>Dinas Kelautan dan Perikanan</span>
       {isEdit && <span className="text-xs px-2 py-1 rounded bg-orange-100 text-orange-700">Mode Edit</span>}
     </div>}>
       <Head title={isEdit ? 'Edit Data Perikanan' : 'Dinas Kelautan dan Perikanan'} />
 
+<<<<<<< HEAD
+=======
+      {/* ✅ Notifikasi “data sudah ada di database” — TANPA TIMER, hanya ✕ */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       {existsMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
           <div className="flex justify-between items-center">
@@ -174,6 +238,10 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       )}
 
+<<<<<<< HEAD
+=======
+      {/* ✅ Notifikasi sukses submit — AUTO-HIDE 4 detik */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       {successMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
           <div className="flex justify-between items-center">
@@ -183,12 +251,20 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       )}
 
+<<<<<<< HEAD
+=======
+      {/* Notifikasi validasi periode */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       {periodError && (
         <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-700">
           {periodError}
         </div>
       )}
 
+<<<<<<< HEAD
+=======
+      {/* FILTER PERIODE */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div id="filter-periode" className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -199,6 +275,10 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
+<<<<<<< HEAD
+=======
+          {/* Tahun */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <select
@@ -215,6 +295,10 @@ export default function InputData({ records = [], mode = 'create', record = null
             {errors.tahun && <p className="text-red-600 text-sm mt-1">{errors.tahun}</p>}
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* Bulan */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -233,6 +317,10 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+      {/* TABEL INDIKATOR */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <form onSubmit={submit} className="bg-white rounded-2xl shadow-sm border p-5">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -284,8 +372,15 @@ export default function InputData({ records = [], mode = 'create', record = null
           </table>
         </div>
 
+<<<<<<< HEAD
         <div className="pt-4 flex justify-end ">
           <button
+=======
+        {/* Tombol simpan */}
+        <div className="pt-4 flex justify-end ">
+          <button
+            // ⛔ nonaktif jika: masih processing, atau (mode create & belum pilih periode), atau (mode create & data sudah ada)
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             disabled={
               processing || (!isEdit && (!data.tahun || !data.bulan || exists))
             }

@@ -6,23 +6,42 @@ import { useEffect, useState, useCallback } from 'react';
 export default function AdminLayout({ header, children }) {
   const user = usePage().props?.auth?.user ?? {};
 
+<<<<<<< HEAD
+=======
+  // ===== util awal sinkron (hindari flicker) =====
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const isMdUpNow = () =>
     (typeof window !== 'undefined'
       ? window.matchMedia('(min-width: 768px)').matches
       : false);
 
+<<<<<<< HEAD
   const [mdUp, setMdUp]   = useState(isMdUpNow);
   const [open, setOpen]   = useState(isMdUpNow); 
   const [ready, setReady] = useState(false);     
 
   useEffect(() => { setReady(true); }, []);
 
+=======
+  // state
+  const [mdUp, setMdUp]   = useState(isMdUpNow); // ≥ md ?
+  const [open, setOpen]   = useState(isMdUpNow); // sidebar open?
+  const [ready, setReady] = useState(false);     // aktifkan animasi setelah mount
+
+  useEffect(() => { setReady(true); }, []);
+
+  // monitor perubahan breakpoint
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mql = window.matchMedia('(min-width: 768px)');
     const handler = (e) => {
       setMdUp(e.matches);
+<<<<<<< HEAD
       setOpen(e.matches); 
+=======
+      setOpen(e.matches); // desktop => open, mobile => closed
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     };
     setMdUp(mql.matches);
     setOpen(mql.matches);
@@ -30,6 +49,10 @@ export default function AdminLayout({ header, children }) {
     catch { mql.addListener(handler); return () => mql.removeListener(handler); }
   }, []);
 
+<<<<<<< HEAD
+=======
+  // helper active
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const norm = (p) => (p || '').replace(/\/+$/, '');
   const isActivePrefix = (href) => {
     try {
@@ -40,23 +63,42 @@ export default function AdminLayout({ header, children }) {
 
   const paths = { dashboard: '/admin/dashboard', data: '/admin/data' };
 
+<<<<<<< HEAD
   const contentPad = open ? 'pl-64 md:pl-64' : 'pl-0 md:pl-20';
 
+=======
+  // konten terdorong di mobile saat open
+  const contentPad = open ? 'pl-64 md:pl-64' : 'pl-0 md:pl-20';
+
+  // tutup sidebar setelah klik menu di mobile
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const handleNavClick = useCallback(() => {
     if (!mdUp) setOpen(false);
   }, [mdUp]);
 
+<<<<<<< HEAD
+=======
+  // transisi: nonaktif sebelum ready
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const transMobile  = ready ? 'transition-transform duration-200' : 'transition-none';
   const transDesktop = ready ? 'md:transition-[width] md:duration-200' : 'md:transition-none';
 
   return (
     <div className="min-h-screen bg-slate-50">
+<<<<<<< HEAD
+=======
+      {/* Guard CSS: sembunyikan tombol burger di ≥ md apa pun yang terjadi */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <style>{`
         @media (min-width: 768px) {
           .admin-burger { display: none !important; }
         }
       `}</style>
 
+<<<<<<< HEAD
+=======
+      {/* SIDEBAR */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <aside
         className={
           `fixed inset-y-0 left-0 z-40 bg-slate-900 text-slate-200
@@ -72,6 +114,10 @@ export default function AdminLayout({ header, children }) {
           </span>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* NAV (utama + logout di bawah) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="h-[calc(100%-4rem)] flex flex-col">
           <nav className="px-2 py-3 mt-2 space-y-3">
             <NavItem
@@ -109,6 +155,10 @@ export default function AdminLayout({ header, children }) {
         </div>
       </aside>
 
+<<<<<<< HEAD
+=======
+      {/* OVERLAY (mobile) */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <button
         aria-label="Close sidebar overlay"
         onClick={() => setOpen(false)}
@@ -117,9 +167,17 @@ export default function AdminLayout({ header, children }) {
           ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       />
 
+<<<<<<< HEAD
       <section className={`min-h-screen flex flex-col ${contentPad}`}>
         <header className="h-16 bg-white border-b flex items-center justify-between px-4 sticky top-0 z-20">
           <div className="flex items-center gap-2">
+=======
+      {/* KONTEN */}
+      <section className={`min-h-screen flex flex-col ${contentPad}`}>
+        <header className="h-16 bg-white border-b flex items-center justify-between px-4 sticky top-0 z-20">
+          <div className="flex items-center gap-2">
+            {/* 🔒 Render tombol burger HANYA di mobile */}
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             {!mdUp && (
               <button
                 className="admin-burger inline-flex items-center justify-center rounded border px-2 py-1 text-slate-600"
@@ -160,6 +218,10 @@ export default function AdminLayout({ header, children }) {
   );
 }
 
+<<<<<<< HEAD
+=======
+/* ===== Komponen & Icon ===== */
+>>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
 function NavItem({ href, active, icon: I, children, onClick, open }) {
   return (
     <Link
