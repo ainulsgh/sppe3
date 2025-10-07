@@ -12,7 +12,6 @@ class DashboardController extends Controller
     {
         $raw = (string) (Auth::user()->role ?? '');
         $role = strtolower(trim($raw));
-
         $map = [
 <<<<<<< HEAD
             //tambahkan dinas baru
