@@ -1,4 +1,4 @@
-// resources/js/Pages/Dinaspeternakan/Data.jsx
+// resources/js/Pages/Dinaspertanian/Data.jsx
 import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -13,10 +13,6 @@ export default function Data({ records = [], filters = {} }) {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
     
-<<<<<<< HEAD
-=======
-  // -------------------- Helpers label bulan --------------------
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthLabels = useMemo(
     () => [
       'Januari','Februari','Maret','April','Mei','Juni',
@@ -25,10 +21,6 @@ export default function Data({ records = [], filters = {} }) {
     []
   );
 
-<<<<<<< HEAD
-=======
-  // -------------------- Normalisasi data --------------------
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const normalized = useMemo(
     () =>
       (records ?? []).map((r) => ({
@@ -39,10 +31,6 @@ export default function Data({ records = [], filters = {} }) {
     [records]
   );
 
-<<<<<<< HEAD
-=======
-  // Tahun yang tersedia di DB (unik & terurut)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const yearsInData = useMemo(
     () =>
       Array.from(new Set(normalized.map((r) => r.tahun)))
@@ -51,10 +39,6 @@ export default function Data({ records = [], filters = {} }) {
     [normalized]
   );
 
-<<<<<<< HEAD
-=======
-  // Bulan yang tersedia untuk tahun terpilih; jika belum pilih tahun, ambil semua bulan yang ada di DB
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const monthsForSelectedYear = useMemo(() => {
     const source = tahun === '' ? normalized : normalized.filter((r) => r.tahun === Number(tahun));
     return Array.from(new Set(source.map((r) => r.bulan)))
@@ -62,10 +46,6 @@ export default function Data({ records = [], filters = {} }) {
       .sort((a, b) => a - b);
   }, [normalized, tahun]);
 
-<<<<<<< HEAD
-=======
-  // -------------------- Default dari server (hanya jika valid di DB) --------------------
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (filters?.tahun && yearsInData.includes(Number(filters.tahun))) {
       setTahun(Number(filters.tahun));
@@ -73,25 +53,14 @@ export default function Data({ records = [], filters = {} }) {
     if (filters?.bulan && monthsForSelectedYear.includes(Number(filters.bulan))) {
       setBulan(Number(filters.bulan));
     }
-<<<<<<< HEAD
   }, [filters, yearsInData.length]);
 
-=======
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, yearsInData.length]);
-
-  // Reset bulan jika tidak tersedia di tahun yang dipilih
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     if (bulan !== '' && !monthsForSelectedYear.includes(Number(bulan))) {
       setBulan('');
     }
   }, [monthsForSelectedYear, bulan]);
 
-<<<<<<< HEAD
-=======
-  // Tutup dropdown export saat klik luar
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   useEffect(() => {
     function handleClickOutside(e) {
       if (exportRef.current && !exportRef.current.contains(e.target)) setShowExport(false);
@@ -100,10 +69,6 @@ export default function Data({ records = [], filters = {} }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-<<<<<<< HEAD
-=======
-  // Record terpilih (untuk menampilkan nilai total/angka)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const selectedYear = tahun === '' ? null : Number(tahun);
   const selectedMonth = bulan === '' ? null : Number(bulan);
   const record =
@@ -113,38 +78,16 @@ export default function Data({ records = [], filters = {} }) {
 
   const canAct = !!(selectedYear && selectedMonth);
 
-<<<<<<< HEAD
   //sesuaikan dengan database
-=======
-  // Daftar indikator + unit
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const indikator = [
-    { label: 'Daging Sapi',                 key: 'daging_sapi', unit: 'Ton' },
-    { label: 'Daging Kambing',              key: 'daging_kambing', unit: 'Ton' },
-    { label: 'Daging Kuda',                 key: 'daging_kuda', unit: 'Ton' },
-    { label: 'Daging Ayam Buras',           key: 'daging_ayam_buras', unit: 'Ton' },
-    { label: 'Daging Ayam Ras Pedaging',    key: 'daging_ayam_ras_pedaging', unit: 'Ton' },
-    { label: 'Daging Itik',                 key: 'daging_itik', unit: 'Ton' },
-    { label: 'Telur Ayam Petelur',          key: 'telur_ayam_petelur', unit: 'Kilogram' },
-    { label: 'Telur Ayam Buras',            key: 'telur_ayam_buras', unit: 'Kilogram' },
-    { label: 'Telur Itik',                  key: 'telur_itik', unit: 'Kilogram' },
-    { label: 'Telur Ayam Ras Petelur',      key: 'telur_ayam_ras_petelur_rak', unit: 'Rak' },
-    { label: 'Telur Ayam Buras',            key: 'telur_ayam_buras_rak', unit: 'Rak' },
-    { label: 'Telur itik',                  key: 'telur_itik_rak', unit: 'Rak' },
+    { label: 'Produksi Padi',                 key: 'produksi_padi', unit: 'Ton' },
   ];
 
   return (
-<<<<<<< HEAD
     //ganti dinas
-    <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
-      <Head title="Dinas Peternakan dan Kesehatan Hewan" />
+    <AuthenticatedLayout header={<span>Dinas pertanian</span>}>
+      <Head title="Dinas pertanian" />
 
-=======
-    <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
-      <Head title="Dinas Peternakan dan Kesehatan Hewan" />
-
-      {/* FILTER */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -172,10 +115,6 @@ export default function Data({ records = [], filters = {} }) {
             </select>
           </div>
 
-<<<<<<< HEAD
-=======
-          {/* Bulan (tergantung tahun) */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -194,13 +133,7 @@ export default function Data({ records = [], filters = {} }) {
         </div>
       </div>
 
-<<<<<<< HEAD
       <div className="bg-white rounded-2xl shadow-sm border p-5">
-=======
-      {/* TABEL + ACTIONS */}
-      <div className="bg-white rounded-2xl shadow-sm border p-5">
-        {/* Header tabel + tombol di kanan */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="flex items-center justify-between mb-3">
 
           <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
@@ -213,7 +146,7 @@ export default function Data({ records = [], filters = {} }) {
 
           <div className="flex gap-3" ref={exportRef}>
             <Link
-              href={`/peternakan/edit?tahun=${selectedYear ?? ''}&bulan=${selectedMonth ?? ''}`}
+              href={`/pertanian/edit?tahun=${selectedYear ?? ''}&bulan=${selectedMonth ?? ''}`}
               className={`px-4 py-2 rounded-lg text-white text-sm ${
                 canAct
                   ? 'bg-orange-500 hover:bg-orange-600'
@@ -239,13 +172,13 @@ export default function Data({ records = [], filters = {} }) {
               {showExport && canAct && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg border z-10">
                   <a
-                    href={`/peternakan/export?format=csv&tahun=${selectedYear}&bulan=${selectedMonth}`}
+                    href={`/pertanian/export?format=csv&tahun=${selectedYear}&bulan=${selectedMonth}`}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                   >
                     Export CSV
                   </a>
                   <a
-                    href={`/peternakan/export?format=xls&tahun=${selectedYear}&bulan=${selectedMonth}`}
+                    href={`/pertanian/export?format=xls&tahun=${selectedYear}&bulan=${selectedMonth}`}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                   >
                     Export Excel
@@ -256,10 +189,6 @@ export default function Data({ records = [], filters = {} }) {
           </div>
         </div>
 
-<<<<<<< HEAD
-=======
-        {/* Tabel (lebih compact) */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="overflow-x-auto shadow border">
 <table className="w-full text-sm md:text-sm leading-tight">
   <thead className="bg-slate-900 text-white ">

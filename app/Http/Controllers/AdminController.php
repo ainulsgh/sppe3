@@ -7,10 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Arr;
 use App\Models\PerikananRecord;
-<<<<<<< HEAD
 use App\Models\PertanianRecord;
-=======
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
 use App\Models\PeternakanRecord;
 use App\Models\PerhubunganRecord;
 use App\Models\DpmptspRecord;
@@ -19,10 +16,6 @@ use App\Export\Export;
 
 class AdminController extends Controller
 {
-<<<<<<< HEAD
-=======
-    /** ------------- KONFIGURASI DINAS & INDIKATOR ------------- */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     private function offices(): array
     {
         return [
@@ -45,10 +38,6 @@ class AdminController extends Controller
             'peternakan' => [
                 'label' => 'Dinas Peternakan dan Kesehatan Hewan',
                 'model' => PeternakanRecord::class,
-<<<<<<< HEAD
-=======
-                // indikator mendukung bentuk array {label, unit}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                 'indicators' => [
                     'daging_sapi'                => ['label' => 'Daging Sapi',                'unit' => 'Ton'],
                     'daging_kambing'             => ['label' => 'Daging Kambing',             'unit' => 'Ton'],
@@ -63,10 +52,6 @@ class AdminController extends Controller
                     'telur_ayam_buras_rak'       => ['label' => 'Telur Ayam Buras',           'unit' => 'Rak'],
                     'telur_itik_rak'             => ['label' => 'Telur Itik',                 'unit' => 'Rak'],
                 ],
-<<<<<<< HEAD
-=======
-                // tidak pakai default unit; ambil dari masing-masing indikator
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                 'unit' => '',
             ],
             'perhubungan' => [
@@ -88,7 +73,6 @@ class AdminController extends Controller
                 ],
                 'unit' => '',
             ],
-<<<<<<< HEAD
             'dinas pertanian' => [
                 'label' => 'Dinas Pertanian',
                 'model' => PertanianRecord::class,
@@ -98,8 +82,6 @@ class AdminController extends Controller
                 'unit' => '',
             ],
             //tambahkan dinas baru sesuai dengan role
-=======
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         ];
     }
 
@@ -112,10 +94,6 @@ class AdminController extends Controller
         return $all[$key];
     }
 
-<<<<<<< HEAD
-=======
-    /** Helper label/unit indikator (kompatibel string / array {label, unit}) */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     private function indicatorLabel(array $indicators, string $key): string
     {
         $v = $indicators[$key] ?? $key;
@@ -129,49 +107,23 @@ class AdminController extends Controller
         return $meta['unit'] ?? '';
     }
 
-<<<<<<< HEAD
-=======
-    /** ====================== DASHBOARD ====================== */
-    // app/Http/Controllers/AdminController.php
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
-
     public function dashboard(Request $request)
     {
         $DINAS = $this->offices();
-<<<<<<< HEAD
-=======
-
-        /* ---------- Grafik (single) ---------- */
-        // ❗ Tanpa default – boleh null
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $chartOffice = $request->query('chart_office');
         if ($chartOffice && !array_key_exists($chartOffice, $DINAS)) {
             abort(400, 'Dinas tidak dikenal.');
         }
-
-<<<<<<< HEAD
         $chartYear = $request->query('chart_year');
         $chartYear = $chartYear !== null ? (int)$chartYear : null;
-
         $chartIndicator = $request->query('chart_indicator');
-=======
-        $chartYear = $request->query('chart_year');            // bisa null
+        $chartYear = $request->query('chart_year');
         $chartYear = $chartYear !== null ? (int)$chartYear : null;
-
-        $chartIndicator = $request->query('chart_indicator');  // bisa null
-        // ❗ Tidak lagi auto-pilih indikator pertama
-
-        // Siapkan grafik: default 12 nol
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
+        $chartIndicator = $request->query('chart_indicator');
         $chart = [];
         for ($b = 1; $b <= 12; $b++) {
             $chart[] = ['bulan' => $b, 'nilai' => 0];
         }
-
-<<<<<<< HEAD
-=======
-        // Jika semua filter lengkap & valid → isi data sebenarnya
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         if (
             $chartOffice &&
             $chartYear &&
@@ -187,10 +139,6 @@ class AdminController extends Controller
             }
         }
 
-<<<<<<< HEAD
-=======
-        /* ---------- Tabel (multi) ---------- */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $yearsPerOffice = [];
         foreach ($DINAS as $k => $m) {
             $yearsPerOffice[$k] = ($m['model'])::select('tahun')->distinct()->orderBy('tahun')
@@ -198,11 +146,6 @@ class AdminController extends Controller
         }
 
         $allMonths = range(1, 12);
-
-<<<<<<< HEAD
-=======
-        // selected (boleh kosong = Semua)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $selOffices = collect((array)$request->query('table_offices', []))
             ->filter(fn($k) => array_key_exists($k, $DINAS))->values()->all();
         $selYears = collect((array)$request->query('table_years', []))
@@ -256,15 +199,7 @@ class AdminController extends Controller
             }
         }
 
-<<<<<<< HEAD
         $officeOptions = collect($DINAS)->map(fn($m, $k) => ['key' => $k, 'label' => $m['label']])->values()->all();
-
-=======
-        // options
-        $officeOptions = collect($DINAS)->map(fn($m, $k) => ['key' => $k, 'label' => $m['label']])->values()->all();
-
-        // ✅ aman saat chartOffice null; ambil label dari string/array
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $indicatorOptionsForChart = collect($DINAS[$chartOffice]['indicators'] ?? [])
             ->map(fn($v, $k) => ['key' => $k, 'label' => is_array($v) ? ($v['label'] ?? $k) : (string)$v])
             ->values()->all();
@@ -283,35 +218,16 @@ class AdminController extends Controller
         }
 
         return Inertia::render('Admin/Dashboard', [
-<<<<<<< HEAD
             'chartOffice'       => $chartOffice,
             'chartYear'         => $chartYear,
             'chartIndicator'    => $chartIndicator,
             'chartIndicatorLbl' => '',
             'chart'             => $chart,
             'tableRows'         => $rows,
-=======
-            // Grafik (indikator label sengaja kosong supaya tidak tampil)
-            'chartOffice'       => $chartOffice,
-            'chartYear'         => $chartYear,
-            'chartIndicator'    => $chartIndicator,
-            'chartIndicatorLbl' => '',   // ❗ kosongkan
-            'chart'             => $chart,
-
-            // Tabel
-            'tableRows'         => $rows,
-
-            // selected
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             'tableOffices'      => $selOffices,
             'tableYears'        => $selYears,
             'tableIndicators'   => $selIndicators,
             'tableMonths'       => $selMonths,
-<<<<<<< HEAD
-=======
-
-            // options
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             'offices'                   => $officeOptions,
             'yearsPerOffice'            => $yearsPerOffice,
             'indicatorOptionsForChart'  => $indicatorOptionsForChart,
@@ -320,11 +236,6 @@ class AdminController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-=======
-
-    /** ====================== SIMPAN (UPSERT) SATU BULAN ====================== */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     public function save(Request $request)
     {
         $DINAS = $this->offices();
@@ -337,11 +248,6 @@ class AdminController extends Controller
             'tahun'  => ['required', 'integer', 'min:2000', 'max:2100'],
             'bulan'  => ['required', 'integer', 'min:1', 'max:12'],
         ];
-
-<<<<<<< HEAD
-=======
-        // tambahkan rule indikator dinamis (semua optional, numeric >= 0)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         foreach (array_keys($DINAS[$office]['indicators']) as $key) {
             $rules[$key] = ['nullable', 'integer', 'min:0'];
         }
@@ -350,24 +256,11 @@ class AdminController extends Controller
 
         /** @var \Illuminate\Database\Eloquent\Model $model */
         $model = $DINAS[$office]['model'];
-<<<<<<< HEAD
         $rec = $model::firstOrNew(['tahun' => $data['tahun'], 'bulan' => $data['bulan']]);
 
         if (Arr::has($rec->getAttributes(), 'user_id') || in_array('user_id', $rec->getFillable(), true)) {
             $rec->user_id = $request->user()->id;
         }
-=======
-
-        // cari atau buat record (unik: tahun+bulan)
-        $rec = $model::firstOrNew(['tahun' => $data['tahun'], 'bulan' => $data['bulan']]);
-
-        // isi user_id jika ada kolomnya
-        if (Arr::has($rec->getAttributes(), 'user_id') || in_array('user_id', $rec->getFillable(), true)) {
-            $rec->user_id = $request->user()->id;
-        }
-
-        // set nilai indikator yang dikirim (yang null tidak disentuh)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         foreach (array_keys($DINAS[$office]['indicators']) as $key) {
             if ($request->has($key)) {
                 $rec->{$key} = (int) ($request->input($key) ?? 0);
@@ -381,68 +274,7 @@ class AdminController extends Controller
 
     public function export(Request $request)
     {
-<<<<<<< HEAD
         $DINAS = $this->offices();
-=======
-        // --- Master sama seperti di data() ---
-        $DINAS = [
-            'perikanan' => [
-                'label' => 'Dinas Kelautan dan Perikanan',
-                'model' => \App\Models\PerikananRecord::class,
-                'indicators' => [
-                    'penangkapan_di_laut'            => 'Penangkapan di Laut',
-                    'penangkapan_di_perairan_umum'   => 'Penangkapan di Perairan Umum',
-                    'budidaya_laut_rumput_laut'      => 'Budidaya Laut (Rumput Laut)',
-                    'budidaya_tambak_rumput_laut'    => 'Budidaya Tambak (Rumput Laut)',
-                    'budidaya_tambak_udang'          => 'Budidaya Tambak (Udang)',
-                    'budidaya_tambak_bandeng'        => 'Budidaya Tambak (Bandeng)',
-                    'budidaya_tambak_lainnya'        => 'Budidaya Tambak (Ikan Lainnya)',
-                    'budidaya_kolam'                 => 'Budidaya Kolam',
-                    'budidaya_sawah'                 => 'Budidaya Sawah',
-                ],
-                // default unit untuk semua indikator perikanan
-                'unit' => 'Ton',
-            ],
-            'peternakan' => [
-                'label' => 'Dinas Peternakan dan Kesehatan Hewan',
-                'model' => PeternakanRecord::class,
-                'indicators' => [
-                    'daging_sapi'                => ['label' => 'Daging Sapi',                'unit' => 'Ton'],
-                    'daging_kambing'             => ['label' => 'Daging Kambing',             'unit' => 'Ton'],
-                    'daging_kuda'                => ['label' => 'Daging Kuda',                'unit' => 'Ton'],
-                    'daging_ayam_buras'          => ['label' => 'Daging Ayam Buras',          'unit' => 'Ton'],
-                    'daging_ayam_ras_pedaging'   => ['label' => 'Daging Ayam Ras Pedaging',   'unit' => 'Ton'],
-                    'daging_itik'                => ['label' => 'Daging Itik',                'unit' => 'Ton'],
-                    'telur_ayam_petelur'         => ['label' => 'Telur Ayam Petelur',         'unit' => 'Kg'],
-                    'telur_ayam_buras'           => ['label' => 'Telur Ayam Buras',           'unit' => 'Kg'],
-                    'telur_itik'                 => ['label' => 'Telur Itik',                 'unit' => 'Kg'],
-                    'telur_ayam_ras_petelur_rak' => ['label' => 'Telur Ayam Ras Petelur',     'unit' => 'Rak'],
-                    'telur_ayam_buras_rak'       => ['label' => 'Telur Ayam Buras',           'unit' => 'Rak'],
-                    'telur_itik_rak'             => ['label' => 'Telur Itik',                 'unit' => 'Rak'],
-                ],
-                'unit' => '',
-            ],
-            'perhubungan' => [
-                'label' => 'Dinas Perhubungan',
-                'model' => PerhubunganRecord::class,
-                'indicators' => [
-                    'retribusi_truk'               => ['label' => 'Retribusi Truk',                'unit' => 'Rupiah'],
-                    'retribusi_pick_up'            => ['label' => 'Retribusi Pick Up',             'unit' => 'Rupiah'],
-                    'retribusi_parkir_motor'       => ['label' => 'Retribusi Parkir Motor',        'unit' => 'Rupiah'],
-                    'retribusi_parkir_angkot'      => ['label' => 'Retribusi Parkir Angkot',       'unit' => 'Rupiah'],
-                ],
-                'unit' => '',
-            ],
-            'dpmptsp' => [
-                'label' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
-                'model' => DpmptspRecord::class,
-                'indicators' => [
-                    'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'Unit'],
-                ],
-                'unit' => '',
-            ],
-        ];
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $MONTH_KEYS = [1 => 'jan', 2 => 'feb', 3 => 'mar', 4 => 'apr', 5 => 'mei', 6 => 'jun', 7 => 'jul', 8 => 'ags', 9 => 'sep', 10 => 'okt', 11 => 'nov', 12 => 'des'];
         $MONTH_LABELS = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
         $QUARTERS = [1 => [1, 2, 3], 2 => [4, 5, 6], 3 => [7, 8, 9], 4 => [10, 11, 12]];
@@ -455,21 +287,10 @@ class AdminController extends Controller
         $selQuarters = collect((array)$request->query('quarters', []))->map(fn($q) => (int)$q)->filter(fn($q) => in_array($q, [1, 2, 3, 4], true))->unique()->sort()->values()->all();
 
         $officesFor  = !empty($selOffices) ? $selOffices : array_keys($DINAS);
-
-<<<<<<< HEAD
-=======
-        // Union bulan dari bulan & triwulan
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $qMonths = collect($selQuarters)->flatMap(fn($q) => $QUARTERS[$q] ?? [])->unique()->sort()->values()->all();
         $monthsFor = !empty($selMonths) || !empty($qMonths)
             ? collect($selMonths)->merge($qMonths)->unique()->sort()->values()->all()
             : range(1, 12);
-
-<<<<<<< HEAD
-=======
-        // ==== Ambil data & bentuk array export ====
-        // Tambahkan kolom "Satuan" setelah "Indikator"
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $headings = ['Dinas', 'Indikator', 'Satuan', 'Tahun'];
         foreach ($monthsFor as $m) $headings[] = $MONTH_LABELS[$m];
         foreach ($selQuarters as $q) $headings[] = "Triwulan {$q}";
@@ -480,16 +301,8 @@ class AdminController extends Controller
             $meta   = $DINAS[$office];
             $model  = $meta['model'];
             $indMap = $meta['indicators'];
-
-<<<<<<< HEAD
             $unitDefault = $meta['unit'] ?? '';
 
-=======
-            // unit default per office (bisa override per-indikator)
-            $unitDefault = $meta['unit'] ?? '';
-
-            // tahun yang ada di DB untuk office ini bila user tidak memilih
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             $yearsAll = $model::select('tahun')->distinct()->orderBy('tahun')->pluck('tahun')->map(fn($y) => (int)$y)->all();
             $yearsFor = !empty($selYears) ? $selYears : $yearsAll;
             if (empty($yearsFor) || empty($indMap)) continue;
@@ -504,27 +317,13 @@ class AdminController extends Controller
                     $row = [
                         $meta['label'],     // Dinas
                         $label,             // Indikator
-<<<<<<< HEAD
                         $unitForIndicator,  // Satuan
                         (int)$y,            // Tahun
                     ];
-
-=======
-                        $unitForIndicator,  // Satuan  ✅ per-indikator
-                        (int)$y,            // Tahun
-                    ];
-
-                    // kolom bulanan
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     foreach ($monthsFor as $b) {
                         $rec = $all->first(fn($r) => $r->tahun == $y && $r->bulan == $b);
                         $row[] = $rec ? (int)$rec->{$key} : 0;
                     }
-
-<<<<<<< HEAD
-=======
-                    // kolom triwulanan (sum 3 bulan)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     foreach ($selQuarters as $q) {
                         $sum = 0;
                         foreach (($QUARTERS[$q] ?? []) as $b) {
@@ -541,26 +340,16 @@ class AdminController extends Controller
 
         $type = strtolower($request->query('type', 'csv'));
 
-<<<<<<< HEAD
-=======
-        // === CSV (tanpa paket tambahan) ===
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         if ($type !== 'xlsx') {
             $filename = 'data_indikator.csv';
             return response()->streamDownload(function () use ($headings, $rowsOut) {
                 $out = fopen('php://output', 'w');
-<<<<<<< HEAD
-=======
-                // opsional: BOM untuk Excel Windows
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                 fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
                 fputcsv($out, $headings);
                 foreach ($rowsOut as $r) fputcsv($out, $r);
                 fclose($out);
             }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
         }
-
-<<<<<<< HEAD
         return Excel::download(new Export($headings, $rowsOut), 'data_indikator.xlsx');
     }
 
@@ -568,74 +357,6 @@ class AdminController extends Controller
     public function data(Request $request)
     {
         $DINAS = $this->offices();
-=======
-        // === XLSX (butuh paket maatwebsite/excel) ===
-        return Excel::download(new Export($headings, $rowsOut), 'data_indikator.xlsx');
-    }
-
-    // app/Http/Controllers/AdminController.php
-
-    public function data(Request $request)
-    {
-        // --- Master dinas & indikator (samakan dgn yang di dashboard()) ---
-        $DINAS = [
-            'perikanan' => [
-                'label' => 'Dinas Kelautan dan Perikanan',
-                'model' => \App\Models\PerikananRecord::class,
-                'indicators' => [
-                    'penangkapan_di_laut'            => 'Penangkapan di Laut',
-                    'penangkapan_di_perairan_umum'   => 'Penangkapan di Perairan Umum',
-                    'budidaya_laut_rumput_laut'      => 'Budidaya Laut (Rumput Laut)',
-                    'budidaya_tambak_rumput_laut'    => 'Budidaya Tambak (Rumput Laut)',
-                    'budidaya_tambak_udang'          => 'Budidaya Tambak (Udang)',
-                    'budidaya_tambak_bandeng'        => 'Budidaya Tambak (Bandeng)',
-                    'budidaya_tambak_lainnya'        => 'Budidaya Tambak (Ikan Lainnya)',
-                    'budidaya_kolam'                 => 'Budidaya Kolam',
-                    'budidaya_sawah'                 => 'Budidaya Sawah',
-                ],
-                // ✅ default unit untuk semua indikator perikanan
-                'unit' => 'Ton',
-            ],
-            'peternakan' => [
-                'label' => 'Dinas Peternakan dan Kesehatan Hewan',
-                'model' => \App\Models\PeternakanRecord::class,
-                'indicators' => [
-                    'daging_sapi'                => ['label' => 'Daging Sapi',                'unit' => 'Ton'],
-                    'daging_kambing'             => ['label' => 'Daging Kambing',             'unit' => 'Ton'],
-                    'daging_kuda'                => ['label' => 'Daging Kuda',                'unit' => 'Ton'],
-                    'daging_ayam_buras'          => ['label' => 'Daging Ayam Buras',          'unit' => 'Ton'],
-                    'daging_ayam_ras_pedaging'   => ['label' => 'Daging Ayam Ras Pedaging',   'unit' => 'Ton'],
-                    'daging_itik'                => ['label' => 'Daging Itik',                'unit' => 'Ton'],
-                    'telur_ayam_petelur'         => ['label' => 'Telur Ayam Petelur',         'unit' => 'Kg'],
-                    'telur_ayam_buras'           => ['label' => 'Telur Ayam Buras',           'unit' => 'Kg'],
-                    'telur_itik'                 => ['label' => 'Telur Itik',                 'unit' => 'Kg'],
-                    'telur_ayam_ras_petelur_rak' => ['label' => 'Telur Ayam Ras Petelur',     'unit' => 'Rak'],
-                    'telur_ayam_buras_rak'       => ['label' => 'Telur Ayam Buras',           'unit' => 'Rak'],
-                    'telur_itik_rak'             => ['label' => 'Telur Itik',                 'unit' => 'Rak'],
-                ],
-                'unit' => '',
-            ],
-            'perhubungan' => [
-                'label' => 'Dinas Perhubungan',
-                'model' => PerhubunganRecord::class,
-                'indicators' => [
-                    'retribusi_truk'               => ['label' => 'Retribusi Truk',                'unit' => 'Rupiah'],
-                    'retribusi_pick_up'            => ['label' => 'Retribusi Pick Up',             'unit' => 'Rupiah'],
-                    'retribusi_parkir_motor'       => ['label' => 'Retribusi Parkir Motor',        'unit' => 'Rupiah'],
-                    'retribusi_parkir_angkot'      => ['label' => 'Retribusi Parkir Angkot',       'unit' => 'Rupiah'],
-                ],
-                'unit' => '',
-            ],
-            'dpmptsp' => [
-                'label' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
-                'model' => DpmptspRecord::class,
-                'indicators' => [
-                    'pbg'               => ['label' => 'Persetujuan Bangunan Gedung',                'unit' => 'Unit'],
-                ],
-                'unit' => '',
-            ],
-        ];
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $MONTH_KEYS = [1 => 'jan', 2 => 'feb', 3 => 'mar', 4 => 'apr', 5 => 'mei', 6 => 'jun', 7 => 'jul', 8 => 'ags', 9 => 'sep', 10 => 'okt', 11 => 'nov', 12 => 'des'];
         $QUARTERS   = [
             1 => [1, 2, 3],
@@ -643,11 +364,6 @@ class AdminController extends Controller
             3 => [7, 8, 9],
             4 => [10, 11, 12],
         ];
-
-<<<<<<< HEAD
-=======
-        // ==== Options/master ====
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $offices = collect($DINAS)->map(fn($m, $k) => ['key' => $k, 'label' => $m['label']])->values()->all();
         $yearsAll = [];
         foreach ($DINAS as $k => $m) {
@@ -655,11 +371,6 @@ class AdminController extends Controller
                 ->pluck('tahun')->map(fn($y) => (int)$y)->values()->all();
         }
         $allMonths = range(1, 12);
-
-<<<<<<< HEAD
-=======
-        // ==== Selected (boleh kosong = semua) ====
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $selOffices = collect((array)$request->query('offices', []))
             ->filter(fn($k) => array_key_exists($k, $DINAS))->values()->all();
         $selYears = collect((array)$request->query('years', []))
@@ -671,20 +382,11 @@ class AdminController extends Controller
 
         $officesForTable = !empty($selOffices) ? $selOffices : array_keys($DINAS);
         $monthsForTable  = !empty($selMonths)  ? $selMonths  : $allMonths;
-
-<<<<<<< HEAD
-=======
-        // ==== Ambil data & bentuk rows ====
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $rows = [];
         foreach ($officesForTable as $office) {
             $meta   = $DINAS[$office];
             $model  = $meta['model'];
             $indMap = $meta['indicators'];
-<<<<<<< HEAD
-=======
-            // unit default untuk office ini
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             $unitDefault = $meta['unit'] ?? '';
 
             $years = !empty($selYears) ? $selYears : ($yearsAll[$office] ?? []);
@@ -696,35 +398,18 @@ class AdminController extends Controller
                 foreach ($indMap as $key => $def) {
                     $label = is_array($def) ? ($def['label'] ?? $key) : (string)$def;
                     $unitForIndicator = is_array($def) ? ($def['unit'] ?? $unitDefault) : $unitDefault;
-
-<<<<<<< HEAD
-=======
-                    // base row (+ unit)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     $row = [
                         'dinas_key'       => $office,
                         'dinas_label'     => $meta['label'],
                         'indikator_key'   => $key,
                         'indikator_label' => $label,
-<<<<<<< HEAD
                         'unit'            => $unitForIndicator,
                         'tahun'           => (int)$y,
                     ];
-=======
-                        // ✅ kolom unit per-indikator
-                        'unit'            => $unitForIndicator,
-                        'tahun'           => (int)$y,
-                    ];
-                    // bulanan (hanya yang terpilih)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     foreach ($monthsForTable as $b) {
                         $rec = $all->first(fn($r) => $r->tahun == $y && $r->bulan == $b);
                         $row[$MONTH_KEYS[$b]] = $rec ? (int)$rec->{$key} : 0;
                     }
-<<<<<<< HEAD
-=======
-                    // triwulanan (hanya yang terpilih)
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     foreach ($selQuarters as $q) {
                         $sum = 0;
                         foreach ($QUARTERS[$q] as $b) {
@@ -738,10 +423,6 @@ class AdminController extends Controller
             }
         }
 
-<<<<<<< HEAD
-=======
-        // ==== Options untuk FE ====
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $indicatorOptions = [];
         foreach ($DINAS as $office => $meta) {
             foreach ($meta['indicators'] as $k => $def) {
@@ -752,10 +433,6 @@ class AdminController extends Controller
                     'key'     => $k,
                     'label'   => $label,
                     'display' => "{$meta['label']} • {$label}",
-<<<<<<< HEAD
-=======
-                    // opsional: kirim unit ke FE bila diperlukan di tempat lain
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                     'unit'    => $unit,
                 ];
             }
@@ -780,10 +457,6 @@ class AdminController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-=======
-    /** ====================== SIMPAN BANYAK BULAN SEKALIGUS ====================== */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     public function bulkSave(Request $request)
     {
         $DINAS = $this->offices();
@@ -823,10 +496,6 @@ class AdminController extends Controller
         return back()->with('success', 'Data berhasil disimpan (bulk).');
     }
 
-<<<<<<< HEAD
-=======
-    /** ====================== HAPUS DATA ====================== */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     public function destroy(Request $request)
     {
         $DINAS = $this->offices();

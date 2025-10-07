@@ -36,11 +36,6 @@ export default function Login({ status, canResetPassword }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Head title="Login SPPE" />
-
-<<<<<<< HEAD
-=======
-      {/* dekor tipis */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800" />
         <div
@@ -181,14 +176,8 @@ export default function Login({ status, canResetPassword }) {
                 </h2>
                 <div className="mt-4 h-[3px] w-24 bg-slate-800 rounded mx-auto lg:mx-0" />
                 <p className="mt-4 max-w-2xl mx-auto lg:mx-0 text-slate-600 text-[15px] sm:text-base lg:text-lg leading-relaxed">
-<<<<<<< HEAD
-                  Platform yang dikembangkan untuk memantau indikator kinerja dari setiap dinas secara berkala. 
-                  Melalui sistem ini, pembaruan data dapat dilakukan setiap bulan sehingga perkembangan capaian dinas dapat dipantau secara transparan dan terstruktur 
-                  dalam mendukung pertumbuhan ekonomi daerah.
-=======
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero consequatur earum deleniti fugit optio esse doloremque, 
                   ipsa dignissimos omnis soluta rem! Corrupti animi cumque delectus pariatur consequatur ducimus accusantium maxime.
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
                 </p>
               </div>
             </div>

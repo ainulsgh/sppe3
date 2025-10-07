@@ -11,7 +11,6 @@ class PerhubunganRecordController extends Controller
 {
     public function index(Request $request)
     {
-        // kirim semua records + optional filter untuk prefilling form
         return Inertia::render('DinasPerhubungan/InputData', [
             'records' => PerhubunganRecord::orderByDesc('tahun')->orderByDesc('bulan')->get(),
             'filters' => [
@@ -23,7 +22,6 @@ class PerhubunganRecordController extends Controller
 
     public function dashboard(Request $request)
     {
-        // ===== Master indikator + unit =====
         $META = [
             'retribusi_truk'               => ['label' => 'Retribusi Truk',                'unit' => 'Rupiah'],
             'retribusi_pick_up'            => ['label' => 'Retribusi Pick Up',             'unit' => 'Rupiah'],
@@ -59,7 +57,6 @@ class PerhubunganRecordController extends Controller
             }
         }
 
-        /* ====== Filter TABEL (multi) ====== */
         $selYears      = collect((array)$request->query('table_years', []))->map(fn($y) => (int)$y)->filter()->values()->all();
         $selIndicators = collect((array)$request->query('table_indicators', []))->filter(fn($k) => array_key_exists($k, $IND))->values()->all();
         $selMonths     = collect((array)$request->query('table_months', []))->map(fn($m) => (int)$m)->filter(fn($m) => $m >= 1 && $m <= 12)->unique()->sort()->values()->all();
@@ -82,19 +79,14 @@ class PerhubunganRecordController extends Controller
         }
 
         return Inertia::render('DinasPerhubungan/Dashboard', [
-            // Grafik (biarkan null kalau belum dipilih)
             'chartYear'         => $chartYear,
             'chartIndicator'    => $chartIndicator,
             'chartIndicatorLbl' => $chartIndicator ? $IND[$chartIndicator] : null,
             'chart'             => $chart,
-
-            // Tabel (multi)
             'tableYears'        => $selYears,
             'tableIndicators'   => collect($selIndicators)->map(fn($k) => ['key' => $k, 'label' => $IND[$k]])->values()->all(),
             'tableMonths'       => $selMonths,
             'tableRows'         => $rows,
-
-            // master options (kirim SEKALIGUS unit)
             'indicators'        => collect($META)->map(fn($v, $k) => ['key' => $k, 'label' => $v['label'], 'unit' => $v['unit']])->values()->all(),
             'allYears'          => $allYears,
             'allMonths'         => $allMonths,
@@ -117,7 +109,6 @@ class PerhubunganRecordController extends Controller
 
         return Inertia::render('DinasPerhubungan/Data', [
             'records' => $records,
-            // ➜ penting: kirim filters agar Data.jsx auto set tahun/bulan
             'filters' => [
                 'tahun' => $request->integer('tahun'),
                 'bulan' => $request->integer('bulan'),
@@ -137,17 +128,15 @@ class PerhubunganRecordController extends Controller
             ->where('bulan', $bulan)
             ->first();
 
-        // Render halaman yang sama dengan InputData, tapi mode=edit
         return Inertia::render('DinasPerhubungan/InputData', [
             'mode' => 'edit',
-            'record' => $rec, // bisa null kalau belum ada, akan diisi 0
+            'record' => $rec,
             'filters' => ['tahun' => $tahun, 'bulan' => $bulan],
         ]);
     }
 
     public function upsert(Request $request)
     {
-        // daftar field numerik agar mudah dipakai berulang
         $numericFields = [
             'retribusi_truk',
             'retribusi_pick_up',
@@ -164,35 +153,24 @@ class PerhubunganRecordController extends Controller
         }
 
         $data = $request->validate($rules);
-
-        // pastikan desimal: cast ke float (atau bisa round)
         foreach ($numericFields as $f) {
             $data[$f] = (float) $data[$f];
         }
 
         $data['user_id'] = $request->user()->id;
 
-        // MENIMPA jika tahun+bulan sudah ada
         PerhubunganRecord::updateOrCreate(
             ['tahun' => $data['tahun'], 'bulan' => $data['bulan']],
             $data
         );
 
         return redirect()
-<<<<<<< HEAD
             ->route('perhubungan.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
-=======
-            ->route('Perhubungan.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
             ->with('success', 'Data berhasil disimpan.');
     }
 
     public function store(Request $request)
     {
-<<<<<<< HEAD
-=======
-        // gunakan rules & numericFields yang sama
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         $numericFields = [
             'retribusi_truk',
             'retribusi_pick_up',
@@ -215,52 +193,37 @@ class PerhubunganRecordController extends Controller
         }
 
         $data['user_id'] = $request->user()->id;
-
-<<<<<<< HEAD
-=======
-        // PENTING: pakai updateOrCreate agar MENIMPA jika (tahun, bulan) sudah ada
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         PerhubunganRecord::updateOrCreate(
             ['tahun' => $data['tahun'], 'bulan' => $data['bulan']],
             $data
         );
-
-<<<<<<< HEAD
-        // ✅ 303 agar flash terbaca konsisten oleh Inertia
         return redirect()
             ->back(303)
             ->with('success', 'Data berhasil disimpan.');
-=======
         return back()->with('success', 'Data berhasil disimpan.');
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     }
 
     public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        $format = $request->query('format', 'csv'); // csv atau xls
+        $format = $request->query('format', 'csv');
         $tahun  = (int) $request->query('tahun');
         $bulan  = (int) $request->query('bulan');
 
         abort_if(!$tahun || !$bulan, 400, 'Parameter tahun/bulan wajib.');
 
         $rec = PerhubunganRecord::where('tahun', $tahun)->where('bulan', $bulan)->first();
-
-        // Mapping indikator + label + satuan
         $indikator = [
             ['key' => 'retribusi_truk',              'label' => 'Retribusi Truk',              'unit' => 'Rupiah'],
             ['key' => 'retribusi_pick_up',          'label' => 'Retribusi Pick Up',           'unit' => 'Rupiah'],
             ['key' => 'retribusi_parkir_motor',             'label' => 'Retribusi Parkir Motor',              'unit' => 'Rupiah'],
             ['key' => 'retribusi_parkir_angkot',       'label' => 'Retribusi Parkir Angkot',        'unit' => 'Rupiah'],
         ];
-
-        // Header & rows (long format)
         $headers = ['Tahun', 'Bulan', 'Indikator',  'Satuan', 'Nilai'];
         $rows = [];
 
         foreach ($indikator as $row) {
             $val = 0;
             if ($rec && isset($rec->{$row['key']})) {
-                // Nilai di DB bisa float (lihat upsert/store yang cast ke float)
                 $val = (float) $rec->{$row['key']};
             }
             $rows[] = [
@@ -271,11 +234,8 @@ class PerhubunganRecordController extends Controller
                 $val,
             ];
         }
-
         $filenameBase = "Perhubungan_{$tahun}_" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
-
         if ($format === 'xls') {
-            // Excel-compatible (HTML table)
             $filename = $filenameBase . '.xls';
             $contentType = 'application/vnd.ms-excel';
 
@@ -294,8 +254,6 @@ class PerhubunganRecordController extends Controller
                 'Cache-Control' => 'no-store, no-cache',
             ]);
         }
-
-        // Default CSV
         $filename = $filenameBase . '.csv';
         return response()->streamDownload(function () use ($headers, $rows) {
             $out = fopen('php://output', 'w');

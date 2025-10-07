@@ -5,11 +5,6 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 export default function AuthenticatedLayout({ header, children }) {
   const page = usePage();
   const user = page.props?.auth?.user ?? {};
-
-<<<<<<< HEAD
-=======
-  /* ======= Responsif ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const isMdUpNow = () =>
     (typeof window !== 'undefined'
       ? window.matchMedia('(min-width: 768px)').matches
@@ -33,32 +28,18 @@ export default function AuthenticatedLayout({ header, children }) {
     catch { mql.addListener(handler); return () => mql.removeListener(handler); }
   }, []);
 
-<<<<<<< HEAD
   const currentPath = useMemo(() => {
     try {
-=======
-  /* ======= Path dari Inertia (BUKAN window) ======= */
-  // page.url bisa mengandung query; kita ambil pathname saja
-  const currentPath = useMemo(() => {
-    try {
-      // base URL dummy agar new URL valid
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       return new URL(page?.url ?? '/', 'http://x').pathname || '/';
     } catch {
       return '/';
     }
   }, [page?.url]);
-
-<<<<<<< HEAD
-=======
-  /* ======= Role & Paths ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const role = useMemo(
     () => (user?.role ? String(user.role).trim().toLowerCase() : ''),
     [user?.role]
   );
 
-<<<<<<< HEAD
   //sesuaikan role
   const paths = useMemo(() => {
     if (role === 'dinas perikanan' || currentPath.startsWith('/perikanan')) {
@@ -75,34 +56,12 @@ export default function AuthenticatedLayout({ header, children }) {
     }
         if (role === 'dinas pertanian' || currentPath.startsWith('/pertanian')) {
       return { dashboard: '/pertanian/dashboard', input: '/pertanian/inputdata', data: '/pertanian/data' };
-=======
-  const paths = useMemo(() => {
-    if (role === 'dinas perikanan' || currentPath.startsWith('/perikanan')) {
-      return { dashboard: '/perikanan/dashboard', input: '/perikanan', data: '/perikanan/data' };
-    }
-    if (role === 'dinas pertanian' || currentPath.startsWith('/pertanian')) {
-      return { dashboard: '/pertanian/dashboard', input: '/pertanian', data: '/pertanian/data' };
-    }
-    if (role === 'dinas peternakan' || currentPath.startsWith('/peternakan')) {
-      return { dashboard: '/peternakan/dashboard', input: '/peternakan', data: '/peternakan/data' };
-    }
-    if (role === 'dinas perhubungan' || currentPath.startsWith('/perhubungan')) {
-      return { dashboard: '/perhubungan/dashboard', input: '/perhubungan', data: '/perhubungan/data' };
-    }
-    if (role === 'dpmptsp' || currentPath.startsWith('/dpmptsp')) {
-      return { dashboard: '/dpmptsp/dashboard', input: '/dpmptsp', data: '/dpmptsp/data' };
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     }
     if (role === 'admin') {
       return { dashboard: '/dashboard', input: '/admin', data: '/admin/data' };
     }
     return { dashboard: '/dashboard', input: '/dashboard', data: '/dashboard' };
   }, [role, currentPath]);
-
-<<<<<<< HEAD
-=======
-  /* ======= Helpers Active (pakai currentPath) ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const norm = (p) => (p || '').replace(/\/+$/, '');
   const isActiveExact  = (href) => {
     const now = norm(currentPath);
@@ -114,58 +73,31 @@ export default function AuthenticatedLayout({ header, children }) {
     const h   = norm(href);
     return now === h || now.startsWith(h + '/');
   };
-
-<<<<<<< HEAD
-=======
-  /* ======= Menu ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const items = [
     { label: 'Dashboard', href: paths.dashboard, icon: IconHome,  active: isActivePrefix(paths.dashboard) },
     { label: 'Data',      href: paths.data,      icon: IconTable, active: isActivePrefix(paths.data) },
     { label: 'Input Data',href: paths.input,     icon: IconEdit,  active: isActiveExact(paths.input) },
   ];
 
-<<<<<<< HEAD
-  //sesuaikan role
-=======
-  /* ======= Header Title ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const computedHeader =
     header ??
     (role === 'dinas perikanan'
       ? 'Dinas Kelautan & Perikanan'
-<<<<<<< HEAD
-=======
-      : role === 'dinas pertanian'
-      ? 'Dinas Pertanian'
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       : role === 'dinas peternakan'
       ? 'Dinas Peternakan'
       : role === 'dinas perhubungan'
       ? 'Dinas Perhubungan'
       : role === 'dpmptsp'
       ? 'dpmptsp'
-<<<<<<< HEAD
       : role === 'dinas pertanian'
       ? 'pertanian'
       : 'Dashboard');
 
   //set logo dinas
-=======
-      : 'Dashboard');
-
-  /* ======= Logo per Dinas (pakai currentPath) ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const { headerLogoSrc, headerLogoAlt } = useMemo(() => {
     if (currentPath.startsWith('/perikanan') || role === 'dinas perikanan') {
       return { headerLogoSrc: '/images/perikanan.jpg', headerLogoAlt: 'Logo Dinas Kelautan & Perikanan' };
     }
-<<<<<<< HEAD
-=======
-    if (currentPath.startsWith('/pertanian') || role === 'dinas pertanian') {
-      return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas Pertanian' };
-    }
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
     if (currentPath.startsWith('/peternakan') || role === 'dinas peternakan') {
       return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas Peternakan' };
     }
@@ -175,19 +107,11 @@ export default function AuthenticatedLayout({ header, children }) {
     if (currentPath.startsWith('/dpmptsp') || role === 'dpmptsp') {
       return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo dpmptsp' };
     }
-<<<<<<< HEAD
-        if (currentPath.startsWith('/pertanian') || role === 'dinas pertanian') {
+    if (currentPath.startsWith('/pertanian') || role === 'dinas pertanian') {
       return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas pertanian' };
     }
     return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas' };
   }, [role, currentPath]);
-
-=======
-    return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas' };
-  }, [role, currentPath]);
-
-  /* ======= Interaksi ======= */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const handleNavClick = useCallback(() => { if (!mdUp) setOpen(false); }, [mdUp]);
 
   const contentPad   = open ? 'pl-56 md:pl-56' : 'pl-0 md:pl-20';
@@ -197,11 +121,6 @@ export default function AuthenticatedLayout({ header, children }) {
   return (
     <div className="min-h-screen bg-slate-50">
       <style>{`@media (min-width: 768px){ .auth-burger{display:none!important;} }`}</style>
-
-<<<<<<< HEAD
-=======
-      {/* SIDEBAR */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <aside
         className={
           `fixed inset-y-0 left-0 z-40 bg-slate-900 text-slate-200
@@ -247,11 +166,6 @@ export default function AuthenticatedLayout({ header, children }) {
           </div>
         </div>
       </aside>
-
-<<<<<<< HEAD
-=======
-      {/* OVERLAY Mobile */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <button
         aria-label="Close sidebar overlay"
         onClick={() => setOpen(false)}
@@ -260,10 +174,6 @@ export default function AuthenticatedLayout({ header, children }) {
           ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       />
 
-<<<<<<< HEAD
-=======
-      {/* KONTEN */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <section className={`min-h-screen flex flex-col ${contentPad}`}>
         <header className="h-16 bg-white border-b flex items-center justify-between px-4 sticky top-0 z-20">
           <div className="flex items-center gap-3">
@@ -314,11 +224,6 @@ export default function AuthenticatedLayout({ header, children }) {
     </div>
   );
 }
-
-<<<<<<< HEAD
-=======
-/* ===== Icons ===== */
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
 function IconHome(props){ return (
   <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor">
     <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5v-6h4v6h5a1 1 0 001-1V10" />

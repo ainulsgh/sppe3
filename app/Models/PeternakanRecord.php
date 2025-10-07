@@ -5,18 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-<<<<<<< HEAD
 //ganti classnya
-=======
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
 class PeternakanRecord extends Model
 {
     use HasFactory;
     protected $fillable = [
-<<<<<<< HEAD
         //sesuaikan dengan database
-=======
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         'user_id',
         'tahun',
         'bulan',

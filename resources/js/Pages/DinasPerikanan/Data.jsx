@@ -90,11 +90,7 @@ export default function Data({ records = [], filters = {} }) {
 
   const canAct = !!(selectedYear && selectedMonth);
 
-<<<<<<< HEAD
   //sesuaikan indikator dinasnya
-=======
-  // Daftar indikator + unit
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
   const indikator = [
     { label: 'Penangkapan Di Laut',              key: 'penangkapan_di_laut',            unit: 'Ton' },
     { label: 'Penangkapan di Perairan Umum',     key: 'penangkapan_di_perairan_umum',   unit: 'Ton' },
@@ -108,27 +104,14 @@ export default function Data({ records = [], filters = {} }) {
   ];
 
   return (
-<<<<<<< HEAD
     //ganti nama dinasnya
     <AuthenticatedLayout header={<span>Dinas Kelautan dan Perikanan</span>}>
       <Head title="Dinas Kelautan dan Perikanan" />
-
-=======
-    <AuthenticatedLayout header={<span>Dinas Kelautan dan Perikanan</span>}>
-      <Head title="Dinas Kelautan dan Perikanan" />
-
-      {/* ✅ Banner sukses (muncul saat redirect dari upsert) */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       {successMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
           {successMsg}
         </div>
       )}
-
-<<<<<<< HEAD
-=======
-      {/* FILTER */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -139,10 +122,6 @@ export default function Data({ records = [], filters = {} }) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-<<<<<<< HEAD
-=======
-          {/* Tahun */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <select
@@ -159,10 +138,6 @@ export default function Data({ records = [], filters = {} }) {
             </select>
           </div>
 
-<<<<<<< HEAD
-=======
-          {/* Bulan (tergantung tahun) */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -181,13 +156,7 @@ export default function Data({ records = [], filters = {} }) {
         </div>
       </div>
 
-<<<<<<< HEAD
       <div className="bg-white rounded-2xl shadow-sm border p-5">
-=======
-      {/* TABEL + ACTIONS */}
-      <div className="bg-white rounded-2xl shadow-sm border p-5">
-        {/* Header tabel + tombol di kanan */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -242,10 +211,6 @@ export default function Data({ records = [], filters = {} }) {
           </div>
         </div>
 
-<<<<<<< HEAD
-=======
-        {/* Tabel (lebih compact) */}
->>>>>>> 6e0ca59fbea2962653e41a069bd3ed95bf98a112
         <div className="overflow-x-auto shadow border">
           <table className="w-full text-xs md:text-sm leading-tight">
             <thead className="bg-slate-900 text-white">
