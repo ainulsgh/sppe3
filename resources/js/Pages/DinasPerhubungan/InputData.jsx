@@ -9,33 +9,26 @@ export default function InputData({ records = [], mode = 'create', record = null
 
   const { flash } = usePage().props;
 
-  // Error periode (tahun/bulan belum dipilih)
   const [periodError, setPeriodError] = useState('');
 
-  // Pesan sukses submit (auto-hide)
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Pesan “sudah ada di database” (NO timer, hanya bisa ditutup manual)
   const [existsMsg, setExistsMsg] = useState('');
 
-  // Label bulan
   const monthNames = useMemo(
     () => ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],
     []
   );
 
-  // Normalisasi records
   const normalized = useMemo(
     () => (records ?? []).map(r => ({ ...r, tahun: Number(r.tahun), bulan: Number(r.bulan) })),
     [records]
   );
 
-  // Ambil flash success dari server -> tampilkan (auto-hide 4 detik)
   useEffect(() => {
     if (flash?.success) setSuccessMsg(String(flash.success));
   }, [flash?.success]);
 
-  // Auto-hide untuk pesan sukses
   useEffect(() => {
     if (!successMsg) return;
     const t = setTimeout(() => setSuccessMsg(''), 4000);
@@ -51,7 +44,6 @@ export default function InputData({ records = [], mode = 'create', record = null
     retribusi_parkir_angkot: '',
   };
 
-  // initial untuk mode edit
   const initial = useMemo(() => {
     if (mode === 'edit') {
       const t = Number(filters?.tahun) || '';
@@ -77,16 +69,14 @@ export default function InputData({ records = [], mode = 'create', record = null
 
   const { data, setData, post, processing, reset, errors } = useForm({ ...initial });
 
-  // ====== CEK EXISTING (tahun, bulan) ======
   const exists = useMemo(() => {
-    if (mode !== 'create') return false; // di edit periode terkunci
+    if (mode !== 'create') return false; 
     const t = Number(data.tahun);
     const b = Number(data.bulan);
     if (!t || !b) return false;
     return normalized.some(r => r.tahun === t && r.bulan === b);
   }, [mode, data.tahun, data.bulan, normalized]);
 
-  // Tampilkan banner “sudah ada” (tanpa timer)
   useEffect(() => {
     if (mode !== 'create') return;
     const t = Number(data.tahun);
@@ -99,7 +89,6 @@ export default function InputData({ records = [], mode = 'create', record = null
     }
   }, [exists, data.tahun, data.bulan, monthNames, mode]);
 
-  // ====== SUBMIT ======
   const submit = (e) => {
     e.preventDefault();
 
@@ -110,14 +99,13 @@ export default function InputData({ records = [], mode = 'create', record = null
     }
     setPeriodError('');
 
-    // Pengaman ekstra: jika sudah ada, jangan submit (misal user tekan Enter)
     if (mode === 'create' && exists) return;
 
     const action = mode === 'edit' ? route('perhubungan.upsert') : route('perhubungan.store');
 
     post(action, {
       preserveScroll: false,
-      preserveState: true, // jaga state lokal
+      preserveState: true, 
 
       onSuccess: (page) => {
         const serverMsg = page?.props?.flash?.success;
@@ -153,7 +141,6 @@ export default function InputData({ records = [], mode = 'create', record = null
     </div>}>
       <Head title={isEdit ? 'Edit Data Perhubungan' : 'Dinas Perhubungan'} />
 
-      {/* ✅ Notifikasi “data sudah ada di database” — TANPA TIMER, hanya ✕ */}
       {existsMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
           <div className="flex justify-between items-center">
@@ -163,7 +150,6 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       )}
 
-      {/* ✅ Notifikasi sukses submit — AUTO-HIDE 4 detik */}
       {successMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
           <div className="flex justify-between items-center">
@@ -173,14 +159,12 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       )}
 
-      {/* Notifikasi validasi periode */}
       {periodError && (
         <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-700">
           {periodError}
         </div>
       )}
 
-      {/* FILTER PERIODE */}
       <div id="filter-periode" className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -191,7 +175,6 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {/* Tahun */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <select
@@ -208,7 +191,6 @@ export default function InputData({ records = [], mode = 'create', record = null
             {errors.tahun && <p className="text-red-600 text-sm mt-1">{errors.tahun}</p>}
           </div>
 
-          {/* Bulan */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -227,7 +209,6 @@ export default function InputData({ records = [], mode = 'create', record = null
         </div>
       </div>
 
-      {/* TABEL INDIKATOR */}
       <form onSubmit={submit} className="bg-white rounded-2xl shadow-sm border p-5">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -279,10 +260,8 @@ export default function InputData({ records = [], mode = 'create', record = null
           </table>
         </div>
 
-        {/* Tombol simpan */}
         <div className="pt-4 flex justify-end ">
           <button
-            // ⛔ nonaktif jika: masih processing, atau (mode create & belum pilih periode), atau (mode create & data sudah ada)
             disabled={
               processing || (!isEdit && (!data.tahun || !data.bulan || exists))
             }

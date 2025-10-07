@@ -26,7 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         //dinas perikanan
         Route::prefix('perikanan')->middleware('role:dinas perikanan')->group(function () {
-                // Route::get('/dashboard', fn() => Inertia::render('DinasPerikanan/Dashboard'))->name('perikanan.dashboard');
                 Route::get('/dashboard', [PerikananRecordController::class, 'dashboard'])->name('perikanan.dashboard');
                 Route::get('/inputdata', [PerikananRecordController::class, 'index'])->name('perikanan.index');
                 Route::post('/input', [PerikananRecordController::class, 'store'])->name('perikanan.store');

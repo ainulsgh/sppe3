@@ -1,4 +1,4 @@
-// resources/js/Pages/Dinaspertanian/Data.jsx
+// resources/js/Pages/Dinaspeternakan/Data.jsx
 import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -12,7 +12,7 @@ export default function Data({ records = [], filters = {} }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
-    
+
   const monthLabels = useMemo(
     () => [
       'Januari','Februari','Maret','April','Mei','Juni',
@@ -78,16 +78,25 @@ export default function Data({ records = [], filters = {} }) {
 
   const canAct = !!(selectedYear && selectedMonth);
 
-  //sesuaikan dengan database
   const indikator = [
-    { label: 'Produksi Padi',                 key: 'produksi_padi', unit: 'Ton' },
+    { label: 'Daging Sapi',                 key: 'daging_sapi', unit: 'Ton' },
+    { label: 'Daging Kambing',              key: 'daging_kambing', unit: 'Ton' },
+    { label: 'Daging Kuda',                 key: 'daging_kuda', unit: 'Ton' },
+    { label: 'Daging Ayam Buras',           key: 'daging_ayam_buras', unit: 'Ton' },
+    { label: 'Daging Ayam Ras Pedaging',    key: 'daging_ayam_ras_pedaging', unit: 'Ton' },
+    { label: 'Daging Itik',                 key: 'daging_itik', unit: 'Ton' },
+    { label: 'Telur Ayam Petelur',          key: 'telur_ayam_petelur', unit: 'Kilogram' },
+    { label: 'Telur Ayam Buras',            key: 'telur_ayam_buras', unit: 'Kilogram' },
+    { label: 'Telur Itik',                  key: 'telur_itik', unit: 'Kilogram' },
+    { label: 'Telur Ayam Ras Petelur',      key: 'telur_ayam_ras_petelur_rak', unit: 'Rak' },
+    { label: 'Telur Ayam Buras',            key: 'telur_ayam_buras_rak', unit: 'Rak' },
+    { label: 'Telur itik',                  key: 'telur_itik_rak', unit: 'Rak' },
   ];
 
   return (
     //ganti dinas
-    <AuthenticatedLayout header={<span>Dinas pertanian</span>}>
-      <Head title="Dinas pertanian" />
-
+    <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
+      <Head title="Dinas Peternakan dan Kesehatan Hewan" />
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -98,7 +107,6 @@ export default function Data({ records = [], filters = {} }) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {/* Tahun */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <select
@@ -146,7 +154,7 @@ export default function Data({ records = [], filters = {} }) {
 
           <div className="flex gap-3" ref={exportRef}>
             <Link
-              href={`/pertanian/edit?tahun=${selectedYear ?? ''}&bulan=${selectedMonth ?? ''}`}
+              href={`/peternakan/edit?tahun=${selectedYear ?? ''}&bulan=${selectedMonth ?? ''}`}
               className={`px-4 py-2 rounded-lg text-white text-sm ${
                 canAct
                   ? 'bg-orange-500 hover:bg-orange-600'
@@ -172,13 +180,13 @@ export default function Data({ records = [], filters = {} }) {
               {showExport && canAct && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg border z-10">
                   <a
-                    href={`/pertanian/export?format=csv&tahun=${selectedYear}&bulan=${selectedMonth}`}
+                    href={`/peternakan/export?format=csv&tahun=${selectedYear}&bulan=${selectedMonth}`}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                   >
                     Export CSV
                   </a>
                   <a
-                    href={`/pertanian/export?format=xls&tahun=${selectedYear}&bulan=${selectedMonth}`}
+                    href={`/peternakan/export?format=xls&tahun=${selectedYear}&bulan=${selectedMonth}`}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                   >
                     Export Excel
@@ -190,37 +198,36 @@ export default function Data({ records = [], filters = {} }) {
         </div>
 
         <div className="overflow-x-auto shadow border">
-<table className="w-full text-sm md:text-sm leading-tight">
-  <thead className="bg-slate-900 text-white ">
-    <tr>
-      <th className="px-2 py-3 text-center text-sm font-semibold border w-1/2">Indikator</th>
-      <th className="px-2 py-3 text-center text-sm font-semibold border">Satuan</th>
-      <th className="px-2 py-3 text-center text-sm font-semibold border">Jumlah</th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-slate-200">
-    {indikator.map((row) => (
-      <tr
-        key={row.key}
-        className="odd:bg-white even:bg-slate-50 hover:bg-slate-100"
-      >
-        <td className="px-2 py-3 text-slate-700 text-sm">{row.label}</td>
-        <td className="px-2 py-3 text-center text-slate-900 border text-sm">{row.unit}</td>
-        <td className="px-2 py-3 text-center font-medium font-mono border text-sm">
-          {record
-            ? record[row.key] !== null && record[row.key] !== undefined
-              ? parseFloat(record[row.key]).toLocaleString('id-ID', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : '0,00'
-            : '0,00'}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+          <table className="w-full text-sm md:text-sm leading-tight">
+            <thead className="bg-slate-900 text-white ">
+              <tr>
+                <th className="px-2 py-3 text-center text-sm font-semibold border w-1/2">Indikator</th>
+                <th className="px-2 py-3 text-center text-sm font-semibold border">Satuan</th>
+                <th className="px-2 py-3 text-center text-sm font-semibold border">Jumlah</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {indikator.map((row) => (
+                <tr
+                  key={row.key}
+                  className="odd:bg-white even:bg-slate-50 hover:bg-slate-100"
+                >
+                  <td className="px-2 py-3 text-slate-700 text-sm">{row.label}</td>
+                  <td className="px-2 py-3 text-center text-slate-900 border text-sm">{row.unit}</td>
+                  <td className="px-2 py-3 text-center font-medium font-mono border text-sm">
+                    {record
+                      ? record[row.key] !== null && record[row.key] !== undefined
+                        ? parseFloat(record[row.key]).toLocaleString('id-ID', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : '0,00'
+                      : '0,00'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {!canAct && (

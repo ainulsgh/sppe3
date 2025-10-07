@@ -15,23 +15,55 @@ export default function Login({ status, canResetPassword }) {
   });
 
   const [clientErrors, setClientErrors] = useState({});
+  const [notice, setNotice] = useState(null); // <<-- notifikasi global (toast/alert)
 
   const submit = (e) => {
     e.preventDefault();
     const ce = {};
-    if (!String(data.email || '').trim()) ce.email = 'Alamat email wajib diisi.';
-    if (!String(data.password || '').trim()) ce.password = 'Kata sandi wajib diisi.';
-    if (!ce.email && !/^\S+@\S+\.\S+$/.test(String(data.email))) ce.email = 'Format email tidak valid.';
+    const emailStr = String(data.email || '').trim();
+    const pwdStr = String(data.password || '').trim();
+
+    if (!emailStr) ce.email = 'Alamat email wajib diisi.';
+    if (!pwdStr) ce.password = 'Kata sandi wajib diisi.';
+
+    // Validasi khusus: harus mengandung '@'
+    if (!ce.email && !emailStr.includes('@')) {
+      ce.email = 'Email harus mengandung "@".';
+    }
+
+    // Jika sudah ada '@', cek format umum email
+    if (!ce.email && !/^\S+@\S+\.\S+$/.test(emailStr)) {
+      ce.email = 'Format email tidak valid.';
+    }
+
     if (Object.keys(ce).length) {
       setClientErrors(ce);
+      setNotice(null); // jangan tampilkan alert global untuk error client-side
       return;
     }
+
     setClientErrors({});
-    post(route('login'), { onFinish: () => reset('password') });
+    setNotice(null);
+
+    post(route('login'), {
+      onError: (errs) => {
+        // Tangkap error kredensial salah dari server (biasanya di 'email' atau 'password')
+        const msg =
+          errs?.email ||
+          errs?.password ||
+          'Email atau kata sandi salah.';
+        setNotice({ type: 'error', message: msg });
+      },
+      onSuccess: () => {
+        setNotice(null);
+      },
+      onFinish: () => reset('password'),
+    });
   };
 
   const emailError = clientErrors.email || errors.email;
   const passwordError = clientErrors.password || errors.password;
+  const authError = notice?.message || errors?.email || errors?.password;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -41,7 +73,7 @@ export default function Login({ status, canResetPassword }) {
         <div
           className="absolute inset-0 opacity-5"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23334155' fill-opacity='0.1'%3E%3Cpath d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23334155' fill-opacity='0.1'%3E%3Cpath d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
       </div>
@@ -69,7 +101,6 @@ export default function Login({ status, canResetPassword }) {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-center">
             {/* LOGIN card */}
             <div className="order-1 lg:order-2 lg:col-span-2">
-              {/* === PERUBAHAN: responsive max-width card === */}
               <div className="mx-auto w-full max-w-[100%] sm:max-w-[520px] md:max-w-[600px] lg:max-w-[680px]">
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_10px_30px_rgb(2_6_23/0.08)]">
                   <div className="bg-slate-800 px-5 py-5 sm:px-8 sm:py-6 text-center">
@@ -78,11 +109,20 @@ export default function Login({ status, canResetPassword }) {
                   </div>
 
                   <div className="px-5 py-5 sm:px-8 sm:py-7">
+                    {/* status dari server (mis. verifikasi email, logout, dsb) */}
                     {status && (
                       <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3">
                         <p className="text-center text-[13px] font-medium text-green-800">{status}</p>
                       </div>
                     )}
+
+{authError && (
+  <div role="alert" aria-live="polite" className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+    <p className="text-center text-[13px] font-medium text-red-800">
+      {authError}
+    </p>
+  </div>
+)}
 
                     <form onSubmit={submit} className="space-y-4 sm:space-y-5" noValidate>
                       {/* email */}
@@ -98,7 +138,7 @@ export default function Login({ status, canResetPassword }) {
                           name="email"
                           value={data.email}
                           placeholder="nama@instansi.go.id"
-                          className="w-full rounded-lg border-2 border-slate-300 px-3.5 py-3 text-[15px] sm:px-4 sm:py-3.5 sm:text-[15.5px]
+                          className="w-full rounded-lg border-2 border-slate-300 px-3.5 py-3 text-[15px] sm:px-4 s m:py-3.5 sm:text-[15.5px]
                                      transition-all duration-150 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/15"
                           autoComplete="username"
                           isFocused

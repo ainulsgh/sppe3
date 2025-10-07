@@ -13,7 +13,6 @@ export default function Data({ records = [], filters = {} }) {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
     
-  // -------------------- Helpers label bulan --------------------
   const monthLabels = useMemo(
     () => [
       'Januari','Februari','Maret','April','Mei','Juni',
@@ -22,7 +21,6 @@ export default function Data({ records = [], filters = {} }) {
     []
   );
 
-  // -------------------- Normalisasi data --------------------
   const normalized = useMemo(
     () =>
       (records ?? []).map((r) => ({
@@ -33,7 +31,6 @@ export default function Data({ records = [], filters = {} }) {
     [records]
   );
 
-  // Tahun yang tersedia di DB (unik & terurut)
   const yearsInData = useMemo(
     () =>
       Array.from(new Set(normalized.map((r) => r.tahun)))
@@ -42,7 +39,6 @@ export default function Data({ records = [], filters = {} }) {
     [normalized]
   );
 
-  // Bulan yang tersedia untuk tahun terpilih; jika belum pilih tahun, ambil semua bulan yang ada di DB
   const monthsForSelectedYear = useMemo(() => {
     const source = tahun === '' ? normalized : normalized.filter((r) => r.tahun === Number(tahun));
     return Array.from(new Set(source.map((r) => r.bulan)))
@@ -50,7 +46,6 @@ export default function Data({ records = [], filters = {} }) {
       .sort((a, b) => a - b);
   }, [normalized, tahun]);
 
-  // -------------------- Default dari server (hanya jika valid di DB) --------------------
   useEffect(() => {
     if (filters?.tahun && yearsInData.includes(Number(filters.tahun))) {
       setTahun(Number(filters.tahun));
@@ -58,17 +53,14 @@ export default function Data({ records = [], filters = {} }) {
     if (filters?.bulan && monthsForSelectedYear.includes(Number(filters.bulan))) {
       setBulan(Number(filters.bulan));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, yearsInData.length]);
 
-  // Reset bulan jika tidak tersedia di tahun yang dipilih
   useEffect(() => {
     if (bulan !== '' && !monthsForSelectedYear.includes(Number(bulan))) {
       setBulan('');
     }
   }, [monthsForSelectedYear, bulan]);
 
-  // Tutup dropdown export saat klik luar
   useEffect(() => {
     function handleClickOutside(e) {
       if (exportRef.current && !exportRef.current.contains(e.target)) setShowExport(false);
@@ -77,7 +69,6 @@ export default function Data({ records = [], filters = {} }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Record terpilih (untuk menampilkan nilai total/angka)
   const selectedYear = tahun === '' ? null : Number(tahun);
   const selectedMonth = bulan === '' ? null : Number(bulan);
   const record =
@@ -87,7 +78,6 @@ export default function Data({ records = [], filters = {} }) {
 
   const canAct = !!(selectedYear && selectedMonth);
 
-  // Daftar indikator + unit
   const indikator = [
     { label: 'Retribusi Truk',                 key: 'retribusi_truk',           unit: 'Rupiah' },
     { label: 'Retribusi Pick Up',              key: 'retribusi_pick_up',        unit: 'Rupiah' },
@@ -99,7 +89,6 @@ export default function Data({ records = [], filters = {} }) {
     <AuthenticatedLayout header={<span>Dinas Perhubungan</span>}>
       <Head title="Dinas Perhubungan" />
 
-      {/* FILTER */}
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -110,7 +99,6 @@ export default function Data({ records = [], filters = {} }) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {/* Tahun */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <select
@@ -127,7 +115,6 @@ export default function Data({ records = [], filters = {} }) {
             </select>
           </div>
 
-          {/* Bulan (tergantung tahun) */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <select
@@ -146,9 +133,7 @@ export default function Data({ records = [], filters = {} }) {
         </div>
       </div>
 
-      {/* TABEL + ACTIONS */}
       <div className="bg-white rounded-2xl shadow-sm border p-5">
-        {/* Header tabel + tombol di kanan */}
         <div className="flex items-center justify-between mb-3">
 
           <div className="flex items-center gap-3 text-slate-700 font-semibold mb-4">
@@ -204,39 +189,37 @@ export default function Data({ records = [], filters = {} }) {
           </div>
         </div>
 
-        {/* Tabel (lebih compact) */}
         <div className="overflow-x-auto shadow border">
-<table className="w-full text-sm md:text-sm leading-tight">
-  <thead className="bg-slate-900 text-white ">
-    <tr>
-      <th className="px-2 py-3 text-center text-sm font-semibold border w-1/2">Indikator</th>
-      <th className="px-2 py-3 text-center text-sm font-semibold border">Satuan</th>
-      <th className="px-2 py-3 text-center text-sm font-semibold border">Jumlah</th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-slate-200">
-    {indikator.map((row) => (
-      <tr
-        key={row.key}
-        className="odd:bg-white even:bg-slate-50 hover:bg-slate-100"
-      >
-        <td className="px-2 py-3 text-slate-700 text-sm">{row.label}</td>
-        <td className="px-2 py-3 text-center text-slate-900 border text-sm">{row.unit}</td>
-        <td className="px-2 py-3 text-center font-medium font-mono border text-sm">
-          {record
-            ? record[row.key] !== null && record[row.key] !== undefined
-              ? parseFloat(record[row.key]).toLocaleString('id-ID', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : '0,00'
-            : '0,00'}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+          <table className="w-full text-sm md:text-sm leading-tight">
+            <thead className="bg-slate-900 text-white ">
+              <tr>
+                <th className="px-2 py-3 text-center text-sm font-semibold border w-1/2">Indikator</th>
+                <th className="px-2 py-3 text-center text-sm font-semibold border">Satuan</th>
+                <th className="px-2 py-3 text-center text-sm font-semibold border">Jumlah</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {indikator.map((row) => (
+                <tr
+                  key={row.key}
+                  className="odd:bg-white even:bg-slate-50 hover:bg-slate-100"
+                >
+                  <td className="px-2 py-3 text-slate-700 text-sm">{row.label}</td>
+                  <td className="px-2 py-3 text-center text-slate-900 border text-sm">{row.unit}</td>
+                  <td className="px-2 py-3 text-center font-medium font-mono border text-sm">
+                    {record
+                      ? record[row.key] !== null && record[row.key] !== undefined
+                        ? parseFloat(record[row.key]).toLocaleString('id-ID', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : '0,00'
+                      : '0,00'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {!canAct && (

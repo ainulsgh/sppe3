@@ -27,15 +27,12 @@ export default function AdminData({
     menu: (b) => ({ ...b, borderRadius: 12, overflow:'hidden' }),
     multiValue: (b) => ({ ...b, borderRadius: 10, background:'#e5e7eb' }),
   };
-
-  // selected (default dari server — bisa kosong artinya semua)
   const [sOffices, setSOffices]   = useState(selected.offices ?? []);
   const [sYears, setSYears]       = useState(selected.years ?? []);
   const [sMonths, setSMonths]     = useState(selected.months ?? []);
   const [sQuarters, setSQuarters] = useState(selected.quarters ?? []);
-  const [showExport, setShowExport] = useState(false); // toggle dropdown export
+  const [showExport, setShowExport] = useState(false); 
 
-  // options
   const optOffices = useMemo(
     () => offices.map(o => ({ value:o.key, label:o.label })),
     [offices]
@@ -56,13 +53,11 @@ export default function AdminData({
     []
   );
 
-  // helper: konversi triwulan -> daftar bulan
   const monthsFromQuarters = (qs=[]) => {
     const map = { 1:[1,2,3], 2:[4,5,6], 3:[7,8,9], 4:[10,11,12] };
     return [...new Set(qs.flatMap(q => map[q] || []))];
   };
 
-  // Kolom bulan yang dipakai (UNION):
   const monthCols = useMemo(() => {
     const triMonths = monthsFromQuarters(sQuarters);
     let use = [];
@@ -81,14 +76,12 @@ export default function AdminData({
     }));
   }, [sMonths, sQuarters, allMonths]);
 
-  // apply filter → muat ulang tabel
   const apply = (off=sOffices, yrs=sYears, mons=sMonths, qtrs=sQuarters) => {
     router.get(route('admin.data'), {
       offices: off, years: yrs, months: mons, quarters: qtrs,
     }, { preserveScroll: true, preserveState: true });
   };
 
-  // builder URL export (CSV/XLSX) dari filter aktif
   const exportUrl = (type /* 'csv' | 'xlsx' */) => {
     const qs = new URLSearchParams();
     (sOffices || []).forEach(v => qs.append('offices[]', v));
@@ -105,7 +98,6 @@ export default function AdminData({
     <AdminLayout header="Badan Pusat Statistik">
       <Head title="Badan Pusat Statistik" />
 
-      {/* CARD: Filter + Tabel */}
       <div className="bg-white rounded-2xl shadow-sm border p-5">
         <div className="mb-4 flex items-center justify-between">
           <div className="font-semibold text-slate-700 flex items-center gap-2">
@@ -113,7 +105,6 @@ export default function AdminData({
             Data Indikator
           </div>
 
-        {/* Tombol Export */}
         <div className="relative">
           <button
             onClick={() => setShowExport(v => !v)}
@@ -144,9 +135,7 @@ export default function AdminData({
         </div>
         </div>
 
-        {/* FILTERS */}
         <div className="grid lg:grid-cols-4 gap-4 mb-5">
-          {/* Dinas */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Dinas</label>
             <Select
@@ -161,7 +150,6 @@ export default function AdminData({
             />
           </div>
 
-          {/* Tahun */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <Select
@@ -176,7 +164,6 @@ export default function AdminData({
             />
           </div>
 
-          {/* Triwulanan */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Triwulanan</label>
             <Select
@@ -191,7 +178,6 @@ export default function AdminData({
             />
           </div>
 
-          {/* Bulanan */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulanan</label>
             <Select
@@ -207,14 +193,12 @@ export default function AdminData({
           </div>
         </div>
 
-        {/* TABEL */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border">
             <thead className="bg-slate-800">
               <tr>
                 <th className="p-2 border text-center text-white">Dinas</th>
                 <th className="p-2 border text-center text-white">Indikator</th>
-                {/* ✅ kolom satuan baru */}
                 <th className="p-2 border text-center text-white">Satuan</th>
                 <th className="p-2 border text-center text-white">Tahun</th>
                 {monthCols.map(c => (
@@ -227,7 +211,6 @@ export default function AdminData({
                 <tr key={idx}>
                   <td className="p-2 border">{row.dinas_label}</td>
                   <td className="p-2 border">{row.indikator_label}</td>
-                  {/* ✅ tampilkan satuan */}
                   <td className="p-2 border text-center">{row.unit && row.unit.trim() !== '' ? row.unit : '—'}</td>
                   <td className="p-2 border text-center">{row.tahun}</td>
                   {monthCols.map(c => (

@@ -16,13 +16,10 @@ import { useMemo, useState } from 'react';
 import { LineChart as LineChartIcon } from 'lucide-react';
 
 export default function AdminDashboard({
-  // grafik (props dari controller)
   chartOffice,
   chartYear,
   chartIndicator,
-  // chartIndicatorLbl, // tidak dipakai lagi
   chart = [],
-  // options
   offices = [],
   yearsPerOffice = {},
   indicatorOptionsForChart = [],
@@ -42,7 +39,6 @@ export default function AdminDashboard({
     'Desember',
   ];
 
-  // gaya react-select agar konsisten
   const selStyles = {
     control: (base) => ({
       ...base,
@@ -56,23 +52,18 @@ export default function AdminDashboard({
     multiValue: (b) => ({ ...b, borderRadius: 10, background: '#e5e7eb' }),
   };
 
-  // ========= State filter grafik (default kosong) =========
   const [gOffice, setGOffice] = useState(chartOffice ?? null);
   const [gTahun, setGTahun] = useState(chartYear ?? null);
   const [gIndikator, setGIndikator] = useState(chartIndicator ?? null);
 
-  // Nilai maksimum data
   const maxVal = useMemo(
     () => Math.max(0, ...chart.map((d) => Number(d.nilai) || 0)),
     [chart]
   );
 
-  // Padding atas sumbu Y agar label angka tidak ketekuk saat mencapai max
-  // 10% dari max, minimum 5
   const yPad = Math.max(5, Math.ceil(maxVal * 0.1));
   const yDomain = [0, maxVal + yPad];
 
-  // Kirim query; hanya sertakan param yang ada
   const applyAll = (office, year, indicator) => {
     const params = {};
     if (office !== null && office !== undefined) params.chart_office = office;
@@ -102,21 +93,17 @@ export default function AdminDashboard({
     <AdminLayout header="Badan Pusat Statistik">
       <Head title="Badan Pusat Statistik" />
 
-      {/* Tinggi = viewport - header(64) - padding main (48) */}
       <div className="h-[calc(100vh-112px)] overflow-hidden">
         <div className="bg-white rounded-2xl shadow-sm border h-full flex flex-col">
-          {/* Header kartu + filter */}
           <div className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-slate-700 flex items-center gap-2">
                 <LineChartIcon className="h-5 w-5" />
                 Grafik Indikator
               </h2>
-              {/* ❌ indikator terpilih di header dihilangkan */}
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
-              {/* DINAS */}
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Dinas</label>
                 <Select
@@ -129,7 +116,6 @@ export default function AdminDashboard({
                     setGOffice(office);
                     setGIndikator(null);
                     setGTahun(null);
-                    // muat ulang opsi indikator utk office terpilih (grafik tetap nol)
                     applyAll(office, null, null);
                   }}
                   options={optOffices}
@@ -138,7 +124,6 @@ export default function AdminDashboard({
                 />
               </div>
 
-              {/* TAHUN */}
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Tahun</label>
                 <Select
@@ -158,7 +143,6 @@ export default function AdminDashboard({
                 />
               </div>
 
-              {/* INDIKATOR */}
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Indikator</label>
                 <Select
@@ -180,12 +164,10 @@ export default function AdminDashboard({
             </div>
           </div>
 
-          {/* Area chart memenuhi sisa tinggi kartu */}
           <div className="flex-1 p-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={chart}
-                // margin lebih besar supaya label/tick tidak terpotong
                 margin={{ left: 20, right: 24, top: 8, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -193,15 +175,11 @@ export default function AdminDashboard({
                 <XAxis
                   dataKey="bulan"
                   tickFormatter={(v) => monthsFull[v - 1]}
-                  // ✅ agar label bulan di kiri/kanan (Jan/Nov/Des) tidak kepotong
                   padding={{ left: 12, right: 12 }}
-                  // ✅ tampilkan semua bulan
                   interval={0}
-                  // ✅ beri jarak antara axis dan label
                   tickMargin={8}
                 />
 
-                {/* Y disembunyikan, domain dinaikkan agar label angka di titik puncak terlihat */}
                 <YAxis hide domain={yDomain} />
 
                 <Tooltip labelFormatter={(v) => monthsFull[v - 1]} />
@@ -214,7 +192,6 @@ export default function AdminDashboard({
                   activeDot={{ r: 5 }}
                   isAnimationActive={false}
                 >
-                  {/* Label angka di setiap titik */}
                   <LabelList
                     dataKey="nilai"
                     position="top"

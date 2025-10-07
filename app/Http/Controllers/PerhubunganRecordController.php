@@ -31,12 +31,10 @@ class PerhubunganRecordController extends Controller
         $IND = collect($META)->mapWithKeys(fn($v, $k) => [$k => $v['label']])->all();
         $mKey = [1 => 'jan', 2 => 'feb', 3 => 'mar', 4 => 'apr', 5 => 'mei', 6 => 'jun', 7 => 'jul', 8 => 'ags', 9 => 'sep', 10 => 'okt', 11 => 'nov', 12 => 'des'];
 
-        // ===== Master untuk "Semua" =====
         $allYears      = PerhubunganRecord::select('tahun')->distinct()->orderBy('tahun')->pluck('tahun')->map(fn($y) => (int)$y)->values()->all();
         $allIndicators = array_keys($META);
         $allMonths     = range(1, 12);
 
-        /* ===== Grafik: hanya hitung jika KEDUA param ada ===== */
         $hasInd  = $request->has('chart_indicator');
         $hasYear = $request->has('chart_year');
 

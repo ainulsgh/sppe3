@@ -9,11 +9,8 @@ import { useMemo, useState,useEffect } from 'react';
 import { LineChart as LineChartIcon, Table as TableIcon } from 'lucide-react';
 
 export default function Dashboard({
-  // grafik (datang dari server — bisa berisi default)
   chartYear, chartIndicator, chartIndicatorLbl, chart,
-  // tabel (selected; boleh kosong)
   tableYears = [], tableIndicators = [], tableMonths = [], tableRows = [],
-  // master (HARUS berisi [{key,label,unit}])
   indicators = [], allYears = [], allMonths = [],
 }) {
   const monthsFull = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -29,21 +26,17 @@ export default function Dashboard({
     multiValue: (b) => ({ ...b, borderRadius: 10, background:'#e5e7eb' }),
   };
 
-  /* ====== Inisialisasi: pakai nilai server HANYA jika ada di query URL ====== */
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const hasYearQ     = !!searchParams?.has('chart_year');
   const hasIndQ      = !!searchParams?.has('chart_indicator');
 
-  /* ===== Grafik (single) — default TIDAK terpilih ===== */
   const [gTahun, setGTahun]         = useState(hasYearQ ? (chartYear ?? null) : null);
   const [gIndikator, setGIndikator] = useState(hasIndQ  ? (chartIndicator ?? null) : null);
 
-  /* ===== Tabel (multi) – selected boleh [] ===== */
   const [tYears, setTYears]           = useState(tableYears);
   const [tIndikators, setTIndikators] = useState(tableIndicators.map(i=>i.key));
   const [tMonths, setTMonths]         = useState(tableMonths);
 
-  // applyAll: kirim hanya param yang ada
   const applyAll = (y = gTahun, ik = gIndikator, years = tYears, inds = tIndikators, mons = tMonths) => {
     const params = {};
     if (y !== null && y !== undefined) params.chart_year = Number(y);
@@ -55,7 +48,6 @@ export default function Dashboard({
     router.get(route('perhubungan.dashboard'), params, { preserveScroll: true, preserveState: true });
   };
 
-  // Options
   const optYears      = useMemo(() => (allYears ?? []).map(y=>({ value:y, label:y })), [allYears]);
   const optIndikators = useMemo(() => (indicators ?? []).map(i=>({ value:i.key, label:i.label })), [indicators]);
   const optMonths     = useMemo(
@@ -64,43 +56,35 @@ export default function Dashboard({
     [allMonths]
   );
 
-  // Kolom bulan untuk tabel
   const monthCols = useMemo(() => {
     const use = (tMonths.length ? tMonths : (allMonths.length ? allMonths : Array.from({length:12},(_,i)=>i+1)))
       .slice().sort((a,b)=>a-b);
     return use.map(m => ({ num:m, key:monthKeys[m-1], label:monthsFull[m-1] }));
   }, [tMonths, allMonths]);
 
-  // helper angka "1,23" / "1.23"
   const toNumber = (v) => {
     if (v === null || v === undefined || v === '') return 0;
     const num = Number(String(v).replace(',', '.'));
     return Number.isNaN(num) ? 0 : num;
   };
 
-  // data grafik numerik
   const chartDataRaw = useMemo(
     () => (chart ?? []).map(d => ({ ...d, nilaiNum: toNumber(d.nilai) })),
     [chart]
   );
 
-  // fallback 12 bulan bernilai 0 jika kosong / belum pilih filter
   const baseMonths = useMemo(
     () => Array.from({length:12},(_,i)=>({ bulan:i+1, nilaiNum:0 })),
     []
   );
   const chartData = chartDataRaw.length ? chartDataRaw : baseMonths;
 
-  // domain Y
   const maxVal   = useMemo(() => Math.max(0, ...chartData.map(d=>d.nilaiNum)), [chartData]);
   const yPad     = Math.max(5, Math.ceil(maxVal * 0.1));
   const yDomain  = [0, maxVal + yPad];
 
   const phAll = (label) => ({ label: `Semua ${label}`, value: '__ALL__', isDisabled: true });
 
-  /* ====== LOOKUP UNIT PER INDIKATOR ======
-     Server harus mengirim indicators berupa array objek { key, label, unit }.
-     Kita buat Map agar lookup cepat: key -> unit. Fallback ke 'Ton' bila kosong. */
   const unitMap = useMemo(() => {
     const m = new Map();
     (indicators ?? []).forEach(i => m.set(i.key, i.unit || 'Ton'));
@@ -123,7 +107,6 @@ export default function Dashboard({
     <AuthenticatedLayout header={<span>Dinas Perhubungan</span>}>
       <Head title="Dinas Perhubungan" />
 
-      {/* ===== Card: Grafik + Filter grafik ===== */}
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-slate-700 flex items-center gap-2">
@@ -133,7 +116,6 @@ export default function Dashboard({
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mb-4">
-          {/* Tahun (grafik) */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <Select
@@ -147,7 +129,7 @@ export default function Dashboard({
               placeholder="Pilih tahun"
             />
           </div>
-          {/* Indikator (grafik) */}
+
           <div>
             <label className="block text-sm text-slate-600 mb-1">Indikator</label>
             <Select
@@ -195,7 +177,6 @@ export default function Dashboard({
         </div>
       </div>
 
-      {/* ===== Card: Filter tabel + Tabel ===== */}
       <div className="bg-white rounded-2xl shadow-sm border p-5">
         <div className="mb-4 font-semibold text-slate-700 flex items-center gap-2">
           <TableIcon className="h-5 w-5" />
@@ -203,7 +184,6 @@ export default function Dashboard({
         </div>
 
         <div className="grid lg:grid-cols-3 gap-4 mb-5">
-          {/* Tahun (tabel) */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Tahun</label>
             <Select
@@ -219,7 +199,6 @@ export default function Dashboard({
             />
           </div>
 
-          {/* Indikator (tabel) */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Indikator</label>
             <Select
@@ -238,7 +217,6 @@ export default function Dashboard({
             />
           </div>
 
-          {/* Bulan (tabel) */}
           <div>
             <label className="block text-sm text-slate-600 mb-1">Bulan</label>
             <Select
@@ -255,7 +233,6 @@ export default function Dashboard({
           </div>
         </div>
 
-        {/* Tabel */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm border">
             <thead className="bg-slate-900">
@@ -270,7 +247,6 @@ export default function Dashboard({
             </thead>
             <tbody>
               {tableRows.map((row, idx)=>{
-                // Ambil unit dari indicators berdasarkan key baris
                 const unit = unitMap.get(row.indikator_key ?? row.indikator) ?? 'Ton';
 
                 return (

@@ -1,4 +1,4 @@
-// resources/js/Pages/DinasPertanian/Dashboard.jsx
+// resources/js/Pages/Dinaspeternakan/Dashboard.jsx
 import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {
@@ -29,14 +29,11 @@ export default function Dashboard({
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const hasYearQ     = !!searchParams?.has('chart_year');
   const hasIndQ      = !!searchParams?.has('chart_indicator');
-
   const [gTahun, setGTahun]         = useState(hasYearQ ? (chartYear ?? null) : null);
   const [gIndikator, setGIndikator] = useState(hasIndQ  ? (chartIndicator ?? null) : null);
-
   const [tYears, setTYears]           = useState(tableYears);
   const [tIndikators, setTIndikators] = useState(tableIndicators.map(i=>i.key));
   const [tMonths, setTMonths]         = useState(tableMonths);
-
   const applyAll = (y = gTahun, ik = gIndikator, years = tYears, inds = tIndikators, mons = tMonths) => {
     const params = {};
     if (y !== null && y !== undefined) params.chart_year = Number(y);
@@ -45,9 +42,8 @@ export default function Dashboard({
     if (inds?.length)  params.table_indicators = inds;
     if (mons?.length)  params.table_months = mons;
 
-    router.get(route('pertanian.dashboard'), params, { preserveScroll: true, preserveState: true });
+    router.get(route('peternakan.dashboard'), params, { preserveScroll: true, preserveState: true });
   };
-
   const optYears      = useMemo(() => (allYears ?? []).map(y=>({ value:y, label:y })), [allYears]);
   const optIndikators = useMemo(() => (indicators ?? []).map(i=>({ value:i.key, label:i.label })), [indicators]);
   const optMonths     = useMemo(
@@ -55,36 +51,29 @@ export default function Dashboard({
       .map(m=>({ value:m, label: monthsFull[m-1] })),
     [allMonths]
   );
-
   const monthCols = useMemo(() => {
     const use = (tMonths.length ? tMonths : (allMonths.length ? allMonths : Array.from({length:12},(_,i)=>i+1)))
       .slice().sort((a,b)=>a-b);
     return use.map(m => ({ num:m, key:monthKeys[m-1], label:monthsFull[m-1] }));
   }, [tMonths, allMonths]);
-
   const toNumber = (v) => {
     if (v === null || v === undefined || v === '') return 0;
     const num = Number(String(v).replace(',', '.'));
     return Number.isNaN(num) ? 0 : num;
   };
-
   const chartDataRaw = useMemo(
     () => (chart ?? []).map(d => ({ ...d, nilaiNum: toNumber(d.nilai) })),
     [chart]
   );
-
   const baseMonths = useMemo(
     () => Array.from({length:12},(_,i)=>({ bulan:i+1, nilaiNum:0 })),
     []
   );
   const chartData = chartDataRaw.length ? chartDataRaw : baseMonths;
-
   const maxVal   = useMemo(() => Math.max(0, ...chartData.map(d=>d.nilaiNum)), [chartData]);
   const yPad     = Math.max(5, Math.ceil(maxVal * 0.1));
   const yDomain  = [0, maxVal + yPad];
-
   const phAll = (label) => ({ label: `Semua ${label}`, value: '__ALL__', isDisabled: true });
-
   const unitMap = useMemo(() => {
     const m = new Map();
     (indicators ?? []).forEach(i => m.set(i.key, i.unit || 'Ton'));
@@ -105,9 +94,8 @@ export default function Dashboard({
 
   return (
     // ganti nama dinasnya
-    <AuthenticatedLayout header={<span>Dinas Pertanian</span>}>
-      <Head title="Dinas Pertanian" />
-    
+    <AuthenticatedLayout header={<span>Dinas Peternakan dan Kesehatan Hewan</span>}>
+      <Head title="Dinas Peternakan dan Kesehatan Hewan" />
       <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-slate-700 flex items-center gap-2">
@@ -130,7 +118,6 @@ export default function Dashboard({
               placeholder="Pilih tahun"
             />
           </div>
-
           <div>
             <label className="block text-sm text-slate-600 mb-1">Indikator</label>
             <Select

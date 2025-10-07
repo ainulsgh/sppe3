@@ -8,13 +8,9 @@ export default function InputData({ records = [], mode = 'create', record = null
   }, []);
 
   const { flash } = usePage().props;
-
   const [periodError, setPeriodError] = useState('');
-
   const [successMsg, setSuccessMsg] = useState('');
-
   const [existsMsg, setExistsMsg] = useState('');
-
   const monthNames = useMemo(
     () => ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],
     []
@@ -35,11 +31,21 @@ export default function InputData({ records = [], mode = 'create', record = null
     return () => clearTimeout(t);
   }, [successMsg]);
 
-  //sesuaikan dengan database
   const base = {
     tahun: '',
     bulan: '',
-    produksi_padi: '',
+    daging_sapi: '',
+    daging_kambing: '',
+    daging_kuda: '',
+    daging_ayam_buras: '',
+    daging_ayam_ras_pedaging: '',
+    daging_itik: '',
+    telur_ayam_petelur: '',
+    telur_ayam_buras: '',
+    telur_itik: '',
+    telur_ayam_ras_petelur_rak: '',
+    telur_ayam_buras_rak: '',
+    telur_itik_rak: '',
   };
 
   const initial = useMemo(() => {
@@ -48,18 +54,39 @@ export default function InputData({ records = [], mode = 'create', record = null
       const b = Number(filters?.bulan) || '';
       const r = record ?? {
         tahun: t, bulan: b,
-        produksi_padi: 0,
+        daging_sapi: 0,
+        daging_kambing: 0,
+        daging_kuda: 0,
+        daging_ayam_buras: 0,
+        daging_ayam_ras_pedaging: 0,
+        daging_itik: 0,
+        telur_ayam_petelur: 0,
+        telur_ayam_buras: 0,
+        telur_itik: 0,
+        telur_ayam_ras_petelur_rak: 0,
+        telur_ayam_buras_rak: 0,
+        telur_itik_rak: 0,
       };
       return {
         tahun: t, bulan: b,
-        produksi_padi: r.produksi_padi,
+        daging_sapi: r.daging_sapi,
+        daging_kambing: r.daging_kambing,
+        daging_kuda: r.daging_kuda,
+        daging_ayam_buras: r.daging_ayam_buras,
+        daging_ayam_ras_pedaging: r.daging_ayam_ras_pedaging,
+        daging_itik: r.daging_itik,
+        telur_ayam_petelur: r.telur_ayam_petelur,
+        telur_ayam_buras: r.telur_ayam_buras,
+        telur_itik: r.telur_itik,
+        telur_ayam_ras_petelur_rak: r.telur_ayam_ras_petelur_rak,
+        telur_ayam_buras_rak: r.telur_ayam_buras_rak,
+        telur_itik_rak: r.telur_itik_rak,
       };
     }
     return base;
   }, [mode, record, filters]);
 
   const { data, setData, post, processing, reset, errors } = useForm({ ...initial });
-
   const exists = useMemo(() => {
     if (mode !== 'create') return false; 
     const t = Number(data.tahun);
@@ -91,20 +118,16 @@ export default function InputData({ records = [], mode = 'create', record = null
     setPeriodError('');
 
     if (mode === 'create' && exists) return;
-
-    const action = mode === 'edit' ? route('pertanian.upsert') : route('pertanian.store');
-
+    const action = mode === 'edit' ? route('peternakan.upsert') : route('peternakan.store');
     post(action, {
       preserveScroll: false,
       preserveState: true, 
-
       onSuccess: (page) => {
         const serverMsg = page?.props?.flash?.success;
         setSuccessMsg(serverMsg || 'Data berhasil disimpan.');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (mode !== 'edit') reset();
       },
-
       onError: () => setSuccessMsg(''),
     });
   };
@@ -120,18 +143,28 @@ export default function InputData({ records = [], mode = 'create', record = null
   //label yang muncul di halaman web
   //key yang ada di database
   const indikator = [
-    { label: 'Produksi Padi', key: 'produksi_padi', unit: 'Ton' },
+    { label: 'Daging Sapi', key: 'daging_sapi', unit: 'Ton' },
+    { label: 'Daging Kambing', key: 'daging_kambing', unit: 'Ton' },
+    { label: 'Daging Kuda', key: 'daging_kuda', unit: 'Ton' },
+    { label: 'Daging Ayam Buras', key: 'daging_ayam_buras', unit: 'Ton' },
+    { label: 'Daging Ayam Ras Pedaging', key: 'daging_ayam_ras_pedaging', unit: 'Ton' },
+    { label: 'Daging Itik', key: 'daging_itik', unit: 'Ton' },
+    { label: 'Telur Ayam Petelur', key: 'telur_ayam_petelur', unit: 'Kg' },
+    { label: 'Telur Ayam Buras', key: 'telur_ayam_buras', unit: 'Kg' },
+    { label: 'Telur Itik', key: 'telur_itik', unit: 'Kg' },
+    { label: 'Telur Ayam Ras Petelur', key: 'telur_ayam_ras_petelur_rak', unit: 'Rak' },
+    { label: 'Telur Ayam Buras', key: 'telur_ayam_buras_rak', unit: 'Rak' },
+    { label: 'Telur Itik', key: 'telur_itik_rak', unit: 'Rak' },
   ];
 
   const isEdit = mode === 'edit';
 
   return (
-    //ganti nama dinasnya
     <AuthenticatedLayout header={<div className="flex items-center gap-3">
-      <span>Dinas pertanian</span>
+      <span>Dinas Peternakan dan Kesehatan Hewan</span>
       {isEdit && <span className="text-xs px-2 py-1 rounded bg-orange-100 text-orange-700">Mode Edit</span>}
     </div>}>
-      <Head title={isEdit ? 'Edit Data pertanian' : 'Dinas pertanian'} />
+      <Head title={isEdit ? 'Edit Data Peternakan' : 'Dinas Peternakan dan Kesehatan Hewan'} />
 
       {existsMsg && (
         <div className="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-green-800">
