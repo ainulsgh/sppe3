@@ -57,6 +57,9 @@ export default function AuthenticatedLayout({ header, children }) {
         if (role === 'dinas pertanian' || currentPath.startsWith('/pertanian')) {
       return { dashboard: '/pertanian/dashboard', input: '/pertanian/inputdata', data: '/pertanian/data' };
     }
+        if (role === 'dinas pariwisata' || currentPath.startsWith('/pariwisata')) {
+      return { dashboard: '/pariwisata/dashboard', input: '/pariwisata/inputdata', data: '/pariwisata/data' };
+    }
     if (role === 'admin') {
       return { dashboard: '/dashboard', input: '/admin', data: '/admin/data' };
     }
@@ -91,6 +94,8 @@ export default function AuthenticatedLayout({ header, children }) {
       ? 'dpmptsp'
       : role === 'dinas pertanian'
       ? 'pertanian'
+      : role === 'dinas pariwisata'
+      ? 'pariwisata'
       : 'Dashboard');
 
   //set logo dinas
@@ -109,6 +114,9 @@ export default function AuthenticatedLayout({ header, children }) {
     }
     if (currentPath.startsWith('/pertanian') || role === 'dinas pertanian') {
       return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas pertanian' };
+    }
+    if (currentPath.startsWith('/pariwisata') || role === 'dinas pariwisata') {
+      return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas pariwisata' };
     }
     return { headerLogoSrc: '/images/bps.svg', headerLogoAlt: 'Logo Dinas' };
   }, [role, currentPath]);

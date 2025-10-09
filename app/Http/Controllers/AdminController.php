@@ -81,6 +81,15 @@ class AdminController extends Controller
                 ],
                 'unit' => '',
             ],
+            'dinas pariwisata' => [
+                'label' => 'Dinas Pariwisata',
+                'model' => PariwisataRecord::class,
+                'indicators' => [
+                    'jumlah_kunjungan_wisata'        => ['label' => 'Jumlah Kunjungan Wisata',         'unit' => 'Orang'],
+                    'pad_objek_wisata'               => ['label' => 'PAD Objek Wisata',                'unit' => 'Juta Rupiah'],
+                ],
+                'unit' => '',
+            ],
             //tambahkan dinas baru sesuai dengan role
         ];
     }

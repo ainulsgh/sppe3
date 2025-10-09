@@ -21,7 +21,8 @@ class DashboardController extends Controller
             'dinas peternakan'  => 'peternakan',
             'dinas perhubungan'  => 'perhubungan',
             'dpmptsp'  => 'dpmptsp',
-            'dinas pertanian' => 'pertanian'
+            'dinas pertanian' => 'pertanian',
+            'dinas pariwisata' => 'pariwisata'
         ];
         $key = $map[$role] ?? null;
 
@@ -34,6 +35,7 @@ class DashboardController extends Controller
             'perhubungan'  => redirect()->route('perhubungan.dashboard'),
             'dpmptsp'  => redirect()->route('dpmptsp.dashboard'),
             'pertanian'  => redirect()->route('pertanian.dashboard'),
+            'pariwisata'  => redirect()->route('pariwisata.dashboard'),
             default      => Inertia::render('login'),
         };
     }

@@ -143,18 +143,8 @@ export default function InputData({ records = [], mode = 'create', record = null
   //label yang muncul di halaman web
   //key yang ada di database
   const indikator = [
-    { label: 'Daging Sapi', key: 'daging_sapi', unit: 'Ton' },
-    { label: 'Daging Kambing', key: 'daging_kambing', unit: 'Ton' },
-    { label: 'Daging Kuda', key: 'daging_kuda', unit: 'Ton' },
-    { label: 'Daging Ayam Buras', key: 'daging_ayam_buras', unit: 'Ton' },
-    { label: 'Daging Ayam Ras Pedaging', key: 'daging_ayam_ras_pedaging', unit: 'Ton' },
-    { label: 'Daging Itik', key: 'daging_itik', unit: 'Ton' },
-    { label: 'Telur Ayam Petelur', key: 'telur_ayam_petelur', unit: 'Kg' },
-    { label: 'Telur Ayam Buras', key: 'telur_ayam_buras', unit: 'Kg' },
-    { label: 'Telur Itik', key: 'telur_itik', unit: 'Kg' },
-    { label: 'Telur Ayam Ras Petelur', key: 'telur_ayam_ras_petelur_rak', unit: 'Rak' },
-    { label: 'Telur Ayam Buras', key: 'telur_ayam_buras_rak', unit: 'Rak' },
-    { label: 'Telur Itik', key: 'telur_itik_rak', unit: 'Rak' },
+    { label: 'Jumlah Kunjungan Wisata',     key: 'jumlah_kunjungan_wisata', unit: 'Orang' },
+    { label: 'PAD Objek Wisata',            key: 'pad_objek_wisata',        unit: 'Juta Rupiah' },
   ];
 
   const isEdit = mode === 'edit';

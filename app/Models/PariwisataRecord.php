@@ -14,7 +14,7 @@ class PariwisataRecord extends Model
         'user_id',
         'tahun',
         'bulan',
-        'jumlah_objek_wisata',
+        'jumlah_kunjungan_wisata',
         'pad_objek_wisata'
     ];
 

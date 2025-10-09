@@ -10,6 +10,7 @@ use App\Http\Controllers\DpmptspRecordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\PertanianRecordController;
+use App\Http\Controllers\PariwisataRecordController;
 
 Route::get('/', function () {
         return redirect()->route('login');
@@ -84,7 +85,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::post('/upsert', [PertanianRecordController::class, 'upsert'])->name('pertanian.upsert');
                 Route::get('/export', [PertanianRecordController::class, 'export'])->name('pertanian.export');
         });
-
+        
+        //dinas pariwisata
+        Route::prefix('pariwisata')->middleware('role:dinas pariwisata')->group(function () {
+                Route::get('/dashboard', [PariwisataRecordController::class, 'dashboard'])->name('pariwisata.dashboard');
+                Route::get('/inputdata', [PariwisataRecordController::class, 'index'])->name('pariwisata.index');
+                Route::post('/input', [PariwisataRecordController::class, 'store'])->name('pariwisata.store');
+                Route::get('/data', [PariwisataRecordController::class, 'data'])->name('pariwisata.data');
+                Route::get('/edit', [PariwisataRecordController::class, 'edit'])->name('pariwisata.edit');
+                Route::post('/edit', [PariwisataRecordController::class, 'upsert'])->name('pariwisata.update');
+                Route::post('/upsert', [PariwisataRecordController::class, 'upsert'])->name('pariwisata.upsert');
+                Route::get('/export', [PariwisataRecordController::class, 'export'])->name('pariwisata.export');
+        });
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 

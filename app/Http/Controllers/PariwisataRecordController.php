@@ -2,34 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PeternakanRecord;
+use App\Models\PariwisataRecord;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 //ganti nama classnya
-class PeternakanRecordController extends Controller
+class PariwisataRecordController extends Controller
 {
     //sesuaikan databasenya
     private const numericFields = [
-        'daging_sapi',
-        'daging_kambing',
-        'daging_kuda',
-        'daging_ayam_buras',
-        'daging_ayam_ras_pedaging',
-        'daging_itik',
-        'telur_ayam_petelur',
-        'telur_ayam_buras',
-        'telur_itik',
-        'telur_ayam_ras_petelur_rak',
-        'telur_ayam_buras_rak',
-        'telur_itik_rak'
+        'jumlah_kunjungan_wisata',
+        'pad_objek_wisata'
     ];
 
     public function index(Request $request)
     {
-        return Inertia::render('DinasPeternakan/InputData', [
-            'records' => PeternakanRecord::orderByDesc('tahun')->orderByDesc('bulan')->get(),
+        return Inertia::render('DinasPariwisata/InputData', [
+            'records' => PariwisataRecord::orderByDesc('tahun')->orderByDesc('bulan')->get(),
             'filters' => [
                 'tahun' => $request->integer('tahun'),
                 'bulan' => $request->integer('bulan'),
@@ -41,22 +31,13 @@ class PeternakanRecordController extends Controller
     {
         //sesuaikan dengan datbase
         $META = [
-            'daging_sapi'                => ['label' => 'Daging Sapi',                'unit' => 'Ton'],
-            'daging_kambing'             => ['label' => 'Daging Kambing',             'unit' => 'Ton'],
-            'daging_kuda'                => ['label' => 'Daging Kuda',                'unit' => 'Ton'],
-            'daging_ayam_buras'          => ['label' => 'Daging Ayam Buras',          'unit' => 'Ton'],
-            'daging_ayam_ras_pedaging'   => ['label' => 'Daging Ayam Ras Pedaging',   'unit' => 'Ton'],
-            'daging_itik'                => ['label' => 'Daging Itik',                'unit' => 'Ton'],
-            'telur_ayam_petelur'         => ['label' => 'Telur Ayam Petelur',         'unit' => 'Kg'],
-            'telur_ayam_buras'           => ['label' => 'Telur Ayam Buras',           'unit' => 'Kg'],
-            'telur_itik'                 => ['label' => 'Telur Itik',                 'unit' => 'Kg'],
-            'telur_ayam_ras_petelur_rak' => ['label' => 'Telur Ayam Ras Petelur',     'unit' => 'Rak'],
-            'telur_ayam_buras_rak'       => ['label' => 'Telur Ayam Buras',           'unit' => 'Rak'],
-            'telur_itik_rak'             => ['label' => 'Telur Itik',                 'unit' => 'Rak'],
+            'jumlah_kunjungan_wisata'    => ['label' => 'Jumlah Kunjungan Wisata',    'unit' => 'Orang'],
+            'pad_objek_wisata'           => ['label' => 'PAD Objek Wisata',           'unit' => 'Juta Rupiah'],
+       
         ];
         $IND = collect($META)->mapWithKeys(fn($v, $k) => [$k => $v['label']])->all();
         $mKey = [1 => 'jan', 2 => 'feb', 3 => 'mar', 4 => 'apr', 5 => 'mei', 6 => 'jun', 7 => 'jul', 8 => 'ags', 9 => 'sep', 10 => 'okt', 11 => 'nov', 12 => 'des'];
-        $allYears      = PeternakanRecord::select('tahun')->distinct()->orderBy('tahun')->pluck('tahun')->map(fn($y) => (int)$y)->values()->all();
+        $allYears      = PariwisataRecord::select('tahun')->distinct()->orderBy('tahun')->pluck('tahun')->map(fn($y) => (int)$y)->values()->all();
         $allIndicators = array_keys($META);
         $allMonths     = range(1, 12);
         $hasInd  = $request->has('chart_indicator');
@@ -66,7 +47,7 @@ class PeternakanRecordController extends Controller
         $chartYear = $hasYear ? (int)$request->query('chart_year') : null;
         $chart = [];
         if ($hasInd && $hasYear) {
-            $chartRecs = PeternakanRecord::where('tahun', $chartYear)
+            $chartRecs = PariwisataRecord::where('tahun', $chartYear)
                 ->orderBy('bulan')
                 ->get(['bulan', $chartIndicator]);
 
@@ -82,7 +63,7 @@ class PeternakanRecordController extends Controller
         $yearsForTable = !empty($selYears) ? $selYears : $allYears;
         $indForTable   = !empty($selIndicators) ? $selIndicators : $allIndicators;
 
-        $all = PeternakanRecord::whereIn('tahun', $yearsForTable)->orderBy('tahun')->orderBy('bulan')->get();
+        $all = PariwisataRecord::whereIn('tahun', $yearsForTable)->orderBy('tahun')->orderBy('bulan')->get();
 
         $rows = [];
         foreach ($yearsForTable as $y) {
@@ -96,7 +77,7 @@ class PeternakanRecordController extends Controller
             }
         }
 
-        return Inertia::render('DinasPeternakan/Dashboard', [
+        return Inertia::render('DinasPariwisata/Dashboard', [
             'chartYear'         => $chartYear,
             'chartIndicator'    => $chartIndicator,
             'chartIndicatorLbl' => $chartIndicator ? $IND[$chartIndicator] : null,
@@ -113,27 +94,17 @@ class PeternakanRecordController extends Controller
 
     public function data(Request $request)
     {
-        $records = PeternakanRecord::orderByDesc('tahun')
+        $records = PariwisataRecord::orderByDesc('tahun')
             ->orderByDesc('bulan')
             ->get([
                 'id',
                 'tahun',
                 'bulan',
-                'daging_sapi',
-                'daging_kambing',
-                'daging_kuda',
-                'daging_ayam_buras',
-                'daging_ayam_ras_pedaging',
-                'daging_itik',
-                'telur_ayam_petelur',
-                'telur_ayam_buras',
-                'telur_itik',
-                'telur_ayam_ras_petelur_rak',
-                'telur_ayam_buras_rak',
-                'telur_itik_rak'
+                'jumlah_kunjungan_wisata',
+                'pad_objek_wisata'
             ]);
 
-        return Inertia::render('DinasPeternakan/Data', [
+        return Inertia::render('DinasPariwisata/Data', [
             'records' => $records,
             'filters' => [
                 'tahun' => $request->integer('tahun'),
@@ -150,11 +121,11 @@ class PeternakanRecordController extends Controller
 
         abort_if(!$tahun || !$bulan, 400, 'Parameter tahun/bulan wajib.');
 
-        $rec = PeternakanRecord::where('tahun', $tahun)
+        $rec = PariwisataRecord::where('tahun', $tahun)
             ->where('bulan', $bulan)
             ->first();
 
-        return Inertia::render('DinasPeternakan/InputData', [
+        return Inertia::render('DinasPariwisata/InputData', [
             'mode' => 'edit',
             'record' => $rec,
             'filters' => ['tahun' => $tahun, 'bulan' => $bulan],
@@ -175,13 +146,13 @@ class PeternakanRecordController extends Controller
             $data[$f] = (float) $data[$f];
         }
         $data['user_id'] = $request->user()->id;
-        PeternakanRecord::updateOrCreate(
+        PariwisataRecord::updateOrCreate(
             ['tahun' => $data['tahun'], 'bulan' => $data['bulan']],
             $data
         );
 
         return redirect()
-            ->route('peternakan.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
+            ->route('pariwisata.data', ['tahun' => $data['tahun'], 'bulan' => $data['bulan']])
             ->with('success', 'Data berhasil disimpan.');
     }
 
@@ -199,7 +170,7 @@ class PeternakanRecordController extends Controller
             $data[$f] = (float) $data[$f];
         }
         $data['user_id'] = $request->user()->id;
-        PeternakanRecord::updateOrCreate(
+        PariwisataRecord::updateOrCreate(
             ['tahun' => $data['tahun'], 'bulan' => $data['bulan']],
             $data
         );
@@ -212,21 +183,12 @@ class PeternakanRecordController extends Controller
         $tahun  = (int) $request->query('tahun');
         $bulan  = (int) $request->query('bulan');
         abort_if(!$tahun || !$bulan, 400, 'Parameter tahun/bulan wajib.');
-        $rec = PeternakanRecord::where('tahun', $tahun)->where('bulan', $bulan)->first();
+        $rec = PariwisataRecord::where('tahun', $tahun)->where('bulan', $bulan)->first();
         //sesuaikan dengan database
         $indikator = [
-            ['key' => 'daging_sapi',              'label' => 'Daging Sapi',              'unit' => 'Ton'],
-            ['key' => 'daging_kambing',           'label' => 'Daging Kambing',           'unit' => 'Ton'],
-            ['key' => 'daging_kuda',              'label' => 'Daging Kuda',              'unit' => 'Ton'],
-            ['key' => 'daging_ayam_buras',        'label' => 'Daging Ayam Buras',        'unit' => 'Ton'],
-            ['key' => 'daging_ayam_ras_pedaging', 'label' => 'Daging Ayam Ras Pedaging', 'unit' => 'Ton'],
-            ['key' => 'daging_itik',              'label' => 'Daging Itik',              'unit' => 'Ton'],
-            ['key' => 'telur_ayam_petelur',       'label' => 'Telur Ayam Petelur',       'unit' => 'Kg'],
-            ['key' => 'telur_ayam_buras',         'label' => 'Telur Ayam Buras',         'unit' => 'Kg'],
-            ['key' => 'telur_itik',               'label' => 'Telur Itik',               'unit' => 'Kg'],
-            ['key' => 'telur_ayam_ras_petelur_rak', 'label' => 'Telur Ayam Ras Petelur', 'unit' => 'Rak'],
-            ['key' => 'telur_ayam_buras_rak',     'label' => 'Telur Ayam Buras',         'unit' => 'Rak'],
-            ['key' => 'telur_itik_rak',           'label' => 'Telur Itik',               'unit' => 'Rak'],
+            ['key' => 'jumlah_kunjungan_wisata',  'label' => 'Jumlah Kunjungan Wisata',  'unit' => 'Orang'],
+            ['key' => 'pad_objek_wisata',         'label' => 'PAD Objek Wisata',         'unit' => 'Juta Rupah'],
+            
         ];
         $headers = ['Tahun', 'Bulan', 'Indikator',  'Satuan', 'Nilai'];
         $rows = [];
@@ -244,7 +206,7 @@ class PeternakanRecordController extends Controller
                 $val,
             ];
         }
-        $filenameBase = "peternakan_{$tahun}_" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        $filenameBase = "pariwisata_{$tahun}_" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
         if ($format === 'xls') {
             $filename = $filenameBase . '.xls';
             $contentType = 'application/vnd.ms-excel';
@@ -277,10 +239,10 @@ class PeternakanRecordController extends Controller
         ]);
     }
 
-    public function destroy(PeternakanRecord $PeternakanRecord)
+    public function destroy(PariwisataRecord $PariwisataRecord)
     {
-        $this->authorize('delete', $PeternakanRecord);
-        $PeternakanRecord->delete();
+        $this->authorize('delete', $PariwisataRecord);
+        $PariwisataRecord->delete();
         return back();
     }
 }
