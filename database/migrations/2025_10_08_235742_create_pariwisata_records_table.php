@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('pertanian_records', function (Blueprint $table) { //sesuaikan nama tabel
+        Schema::create('pariwisata_records', function (Blueprint $table) { //sesuaikan nama tabel
             $table->id();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             $table->integer('tahun');
-            $table->tinyInteger('bulan');
+            $table->tinyInteger('bulan'); 
 
             //isikan indikator dinas
-            $table->double('produksi_padi')->default(0);
+            $table->integer('jumlah_kunjungan_wisata')->default(0);
+            $table->integer('pad_objek_wisata')->default(0);
 
             $table->timestamps();
             $table->unique(['tahun', 'bulan']);
@@ -26,6 +27,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('pertanian_records'); //sesuaikan nama tabel
+        Schema::dropIfExists('pariwisata_records'); //sesuaikan nama tabel
     }
 };
